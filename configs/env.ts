@@ -5,6 +5,7 @@ dotenv.config();
 interface Config{
     port: number;
     databaseUrl: string;
+    windowMs: number
 }
 
 const requireEnv=function (value: string) {
@@ -17,7 +18,8 @@ const requireEnv=function (value: string) {
 
 const config: Config={
     port: Number(requireEnv("ONE_AUTH_SERVER_URL")),
-    databaseUrl: requireEnv("ONE_AUTH_DATABASE_SERVER_URL")
+    databaseUrl: requireEnv("ONE_AUTH_DATABASE_SERVER_URL"),
+    windowMs: Number(requireEnv("ONE_AUTH_RATE_LIMIT_WINDOW_SIZE"))
 }
 
 export default config;
