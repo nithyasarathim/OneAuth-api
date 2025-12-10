@@ -8,8 +8,8 @@ import limitRate from "../middlewares/rateLimiter";
 
 const registerRouter = Router();
 
-registerRouter.post("/verify-email", limitRate(2), verifyEmail);
-registerRouter.post("/verify-otp", limitRate(2), verifyOTP);
-registerRouter.post("/create-account", limitRate(2), createAccount);
+registerRouter.post("/verify-email", limitRate(3), verifyEmail);
+registerRouter.post("/verify-otp", limitRate(3), verifyOTP);
+registerRouter.post("/create-account", limitRate(3), createAccount);
 
 export default registerRouter;
