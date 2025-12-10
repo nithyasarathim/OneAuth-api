@@ -1,13 +1,12 @@
-import express from "express";
-import dotenv from "dotenv";
-import connectDB from "./configs/db";
+import app from './app.ts';
+import config from './configs/env.ts';
+import connectDB from "./configs/db.ts";
 
-dotenv.config();
+const startServer = async () => {
+    await connectDB();
+    app.listen(config.port, () => {
+        console.log(`One Auth Server is running on http://localhost:${config.port}`);
+    });
+};
 
-const app = express();
-connectDB();
-
-app.use(express.json());
-app.listen(process.env.ONE_AUTH_SERVER_PORT, () => {
-    console.log(`One Auth Server is running on http://localhost:${process.env.ONE_AUTH_SERVER_PORT}`);
-});
+startServer();
