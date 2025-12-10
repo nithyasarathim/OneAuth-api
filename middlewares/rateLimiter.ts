@@ -1,4 +1,4 @@
-import rateLimit from 'express-rate-limit';
+import rateLimit, { ipKeyGenerator } from 'express-rate-limit';
 import config from "../configs/env";
 import ApiError from '../errors/api.error';
 
@@ -11,7 +11,7 @@ const limitRate = function (MAX_REQUESTS: number) {
         standardHeaders: true,
         legacyHeaders: false,
         keyGenerator: (req) => {
-            const ip = req.ip;
+            const ip = ipKeyGenerator(req) as string;
             const path = req.originalUrl;
             return `${ip}-${path}`;
         },
