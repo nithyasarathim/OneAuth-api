@@ -7,8 +7,7 @@ import registerRouter from "./routers/register.route";
 
 const app = express();
 app.use(cors({
-    origin: "http://localhost:5173",
-    credentials: true,
+    origin: "*",
 }));
 
 app.use(express.json());
