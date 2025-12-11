@@ -3,6 +3,7 @@ import crypto from "crypto";
 import config from "../configs/env";
 import { sendVerificationEmail } from "../configs/axios/email.axios";
 import OtpMap from "../utils/OtpMap";
+import UserAccount from "../modals/UserAccount";
 
 const verifyEmail = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -38,7 +39,7 @@ const verifyOTP = async (req: Request, res: Response): Promise<void> => {
     const { email, otp } = req.body;
     console.log(email);
     if (!email || !otp) {
-      console.log("Email and OTP required")
+      console.log("Email and OTP required");
       res.status(500).json({
         success: false,
         message: "Email and OTP required",
@@ -76,8 +77,8 @@ const verifyOTP = async (req: Request, res: Response): Promise<void> => {
     OtpMap.delete(email);
     res.status(200).json({
       success: true,
-      message:"OTP is valid"
-    })
+      message: "OTP is valid",
+    });
   } catch (err) {
     console.log("Internal server error");
     res.status(500).json({
@@ -89,11 +90,25 @@ const verifyOTP = async (req: Request, res: Response): Promise<void> => {
 };
 
 const createAccount = async (req: Request, res: Response): Promise<void> => {
-  const { email, password } = req.body;
-  console.log(email, password);
-  res
-    .status(200)
-    .json({ success: true, message: `Account created successfully` });
+  try {
+    const { email, password } = req.body;
+  const username = email.split("@")[0];
+    const user = await UserAccount.create({
+      email,
+      password,
+      username
+    });
+    res.status(200).json({
+      success: true,
+      message:"User Created"
+    })
+  } catch (err) {
+    console.log("[ERROR IN CREATING ACCOUNT] : ", err.message);
+    res.status(400).json({
+      success: false,
+      message:"Error in creating account"
+    })
+  }
 };
 
 export { verifyEmail, verifyOTP, createAccount };
