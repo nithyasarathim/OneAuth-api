@@ -8,7 +8,7 @@ import OtpMap from "../utils/OtpMap";
 const verifyEmail = async (req: Request, res: Response): Promise<void> => {
   try {
     const { email } = req.body;
-    const otp = Math.floor(1000 + Math.random() * 9000).toString();
+    const otp = crypto.randomInt(1000,9999).toString();
     const expiresAt = Date.now() + 5 * 60 * 1000;
 
     OtpMap.set(email, { otp, expiresAt });
