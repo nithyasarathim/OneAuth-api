@@ -16,7 +16,7 @@ const limitRate = function (MAX_REQUESTS: number) {
             return `${ip}-${path}`;
         },
         handler: () => {
-            throw new ApiError("Too Many requests for this endpoint", 429);
+            throw new ApiError("Too Many requests, Try after few moments !", 429);
         }
     });
 }
