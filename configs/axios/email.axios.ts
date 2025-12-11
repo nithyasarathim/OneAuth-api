@@ -14,8 +14,8 @@ const sendVerificationEmail = function async(
   timestamp: string,
   signature: string
 ) {
-  return emailAPI.post("/auth/send-email", {
-    email: email,
+  return emailAPI.post("/otp/mail/register", {
+    to: email,
     otp: otp,
     timestamp: timestamp,
     signature: signature,
