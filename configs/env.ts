@@ -7,6 +7,7 @@ interface Config{
     databaseUrl: string;
     windowMs: number;
     emailServerUrl: string;
+    emailServerSecret: string;
 }
 
 const requireEnv=function (value: string) {
@@ -21,7 +22,8 @@ const config: Config={
     port: Number(requireEnv("ONE_AUTH_SERVER_PORT")),
     databaseUrl: requireEnv("ONE_AUTH_DATABASE_SERVER_URL"),
     windowMs: Number(requireEnv("ONE_AUTH_RATE_LIMIT_WINDOW_SIZE")),
-    emailServerUrl: requireEnv("ONE_MAIL_SERVER_URL")
+    emailServerUrl: requireEnv("ONE_MAIL_SERVER_URL"),
+    emailServerSecret: requireEnv("ONE_MAIL_SERVER_SECRET")
 }
 
 export default config;
