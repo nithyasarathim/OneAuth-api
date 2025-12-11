@@ -11,7 +11,7 @@ const emailAPI = axios.create({
 const sendVerificationEmail = function async(
   email: string,
   otp: string,
-  timestamp: number,
+  timestamp: string,
   signature: string
 ) {
   return emailAPI.post("/auth/send-email", {
