@@ -1,0 +1,22 @@
+import { createClient } from "redis";
+import config from "./env";
+
+const redis = createClient({
+  url: config.cacheServerUrl,
+});
+
+redis.on("error", (err) => {
+  console.log("[REDIS CONNECTION ERROR] :", err.message);
+});
+
+const connectCache = async () => {
+    try {
+        await redis.connect();
+        console.log("Redis Connection : SUCCESS");
+    } catch (err) {
+        console.log("Redis Connection : FAILURE");
+        process.exit(1);
+    }
+};
+
+export { redis, connectCache };
