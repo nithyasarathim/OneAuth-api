@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import crypto from "crypto";
+import bcrypt from "bcrypt";
 import config from "../configs/env";
 import { sendVerificationEmail } from "../configs/axios/email.axios";
 import OtpMap from "../utils/OtpMap";
@@ -37,7 +38,7 @@ const verifyEmail = async (req: Request, res: Response): Promise<void> => {
 
 const verifyOTP = async (req: Request, res: Response): Promise<void> => {
   try {
-    const email = req.body.email?.trim().toLowerCase();
+    const email = req.body.email?.trim().toLowerCase(); 
     const { otp } = req.body;
     console.log(email);
     if (!email || !otp) {
@@ -129,11 +130,12 @@ const createAccount = async (req: Request, res: Response): Promise<void> => {
     }
     const username = email.split("@")[0];
 
-    const normalizedEmail = email;
+    const normalizedEmail = email.trim().toLowerCase();
+    const normalizedPassword = bcrypt.hash(password.trim().toLowerCase(),10);
 
     await UserAccount.create({
       email:normalizedEmail,
-      password,
+      password:normalizedPassword,
       username,
     });
     VerifiedSessionMap.delete(token);
