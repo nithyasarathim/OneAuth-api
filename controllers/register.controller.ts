@@ -3,8 +3,6 @@ import crypto from "node:crypto";
 import bcrypt from "bcrypt";
 import config from "../configs/env";
 import { sendVerificationEmail } from "../configs/axios/email.axios";
-import OtpMap from "../utils/OtpMap";
-import VerifiedSessionMap from "../utils/verifiedSessionMap";
 import UserAccount from "../modals/UserAccount";
 import { redis } from "../configs/cache";
 
@@ -79,21 +77,25 @@ const verifyOTP = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    await redis.del(`otp:${email}`)
+    await redis.del(`otp:${email}`);
     const token = crypto.randomBytes(32).toString("hex");
 
-    await redis.set(`verify:${token}`,email,{EX:VERIFIED_TOKEN_TTL})
+    await redis.set(`verify:${token}`, email, { EX: VERIFIED_TOKEN_TTL });
 
     res.cookie("verified_token", token, {
       httpOnly: true,
-      // secure: true,
-      sameSite: "strict",
-      maxAge: VERIFIED_TOKEN_TTL*1000,
+      secure: true,
+      sameSite: "lax",
+      maxAge: VERIFIED_TOKEN_TTL * 1000,
     });
+
+    console.log(res.cookie.verified_token);
+
     res.status(200).json({
       success: true,
       message: "OTP is valid",
     });
+    return;
   } catch (err) {
     console.log("Internal server error");
     res.status(500).json({
