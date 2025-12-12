@@ -4,8 +4,8 @@ import cookieParser from "cookie-parser";
 
 import errorHandler from "./middlewares/errorHandler";
 import requestLogger from "./middlewares/requestLogger";
-
 import registerRouter from "./routers/register.route";
+
 
 const app = express();
 
