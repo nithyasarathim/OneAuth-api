@@ -6,6 +6,10 @@ import { sendVerificationEmail } from "../configs/axios/email.axios";
 import OtpMap from "../utils/OtpMap";
 import VerifiedSessionMap from "../utils/verifiedSessionMap";
 import UserAccount from "../modals/UserAccount";
+import { redis } from "../configs/cache";
+
+const OTP_TTL = config.otpTtl;
+const VERIFIED_TOKEN_TTL = config.verifiedTokenTtl;
 
 const verifyEmail = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -15,22 +19,19 @@ const verifyEmail = async (req: Request, res: Response): Promise<void> => {
     if (existingUser) {
       res.status(400).json({
         success: false,
-        message:"Email already in use !"
-      })
+        message: "Email already in use !",
+      });
       return;
     }
 
     const otp = crypto.randomInt(1000, 9999).toString();
-    const expiresAt = Date.now() + 5 * 60 * 1000;
-    console.log(email);
-    OtpMap.set(email, { otp, expiresAt });
     const timestamp = Date.now().toString();
-    const rawInfo = email + otp + timestamp;
     const signature = crypto
       .createHmac("sha256", config.emailServerSecret)
-      .update(rawInfo)
+      .update(email + otp + timestamp)
       .digest("hex");
 
+    await redis.set(`otp:${email}`, otp, { EX: OTP_TTL });
     await sendVerificationEmail(email, otp, timestamp, signature);
 
     res.status(200).json({
@@ -48,7 +49,7 @@ const verifyEmail = async (req: Request, res: Response): Promise<void> => {
 
 const verifyOTP = async (req: Request, res: Response): Promise<void> => {
   try {
-    const email = req.body.email?.trim().toLowerCase(); 
+    const email = req.body.email?.trim().toLowerCase();
     const { otp } = req.body;
     console.log(email);
     if (!email || !otp) {
@@ -126,11 +127,7 @@ const createAccount = async (req: Request, res: Response): Promise<void> => {
       return;
     }
     const session = VerifiedSessionMap.get(token);
-    if (
-      !session ||
-      session.email !== email ||
-      Date.now() > session.expiresAt
-    ) {
+    if (!session || session.email !== email || Date.now() > session.expiresAt) {
       res.status(400).json({
         success: false,
         message: "Email is not verified",
@@ -141,11 +138,11 @@ const createAccount = async (req: Request, res: Response): Promise<void> => {
     const username = email.split("@")[0];
 
     const normalizedEmail = email.trim().toLowerCase();
-    const normalizedPassword = bcrypt.hash(password.trim().toLowerCase(),10);
+    const normalizedPassword = bcrypt.hash(password.trim().toLowerCase(), 10);
 
     await UserAccount.create({
-      email:normalizedEmail,
-      password:normalizedPassword,
+      email: normalizedEmail,
+      password: normalizedPassword,
       username,
     });
     VerifiedSessionMap.delete(token);
