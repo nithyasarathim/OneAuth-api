@@ -10,6 +10,16 @@ import UserAccount from "../modals/UserAccount";
 const verifyEmail = async (req: Request, res: Response): Promise<void> => {
   try {
     const email = req.body.email?.trim().toLowerCase();
+
+    const existingUser = await UserAccount.findOne({ email });
+    if (existingUser) {
+      res.status(400).json({
+        success: false,
+        message:"Email already in use !"
+      })
+      return;
+    }
+
     const otp = crypto.randomInt(1000, 9999).toString();
     const expiresAt = Date.now() + 5 * 60 * 1000;
     console.log(email);
