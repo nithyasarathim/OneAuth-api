@@ -3,6 +3,7 @@ import crypto from "crypto";
 import config from "../configs/env";
 import { sendVerificationEmail } from "../configs/axios/email.axios";
 import OtpMap from "../utils/OtpMap";
+import VerifiedSessionMap from "../utils/verifiedSessionMap";
 import UserAccount from "../modals/UserAccount";
 
 const verifyEmail = async (req: Request, res: Response): Promise<void> => {
@@ -75,6 +76,16 @@ const verifyOTP = async (req: Request, res: Response): Promise<void> => {
       return;
     }
     OtpMap.delete(email);
+    const token = crypto.randomBytes(32).toString();
+    const tokenExpiresAt = Date.now() + 5 * 60 * 1000;
+
+    VerifiedSessionMap.set(token, { email, tokenExpiresAt });
+    res.cookie("verified_token", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+      maxAge: 5 * 60 * 1000,
+    });
     res.status(200).json({
       success: true,
       message: "OTP is valid",

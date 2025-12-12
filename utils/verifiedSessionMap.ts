@@ -1,6 +1,6 @@
 const VerifiedSessionMap = new Map<
   string,
-  { email: string; expiresAt: number }
+  { email: string; tokenExpiresAt: number }
 >();
 
 export default VerifiedSessionMap;
