@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import crypto from "crypto";
+import crypto from "node:crypto";
 import bcrypt from "bcrypt";
 import config from "../configs/env";
 import { sendVerificationEmail } from "../configs/axios/email.axios";
