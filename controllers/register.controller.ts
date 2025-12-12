@@ -103,19 +103,43 @@ const verifyOTP = async (req: Request, res: Response): Promise<void> => {
 const createAccount = async (req: Request, res: Response): Promise<void> => {
   try {
     const { email, password } = req.body;
+
+    const token = req.cookies?.verified_token;
+    if (!token) {
+      res.status(400).json({
+        success: false,
+        message: "Unauthorized request",
+      });
+      return;
+    }
+    const session = VerifiedSessionMap.get(token);
+    if (
+      !session ||
+      session.email !== email ||
+      Date.now() > session.tokenExpiresAt
+    ) {
+      res.status(400).json({
+        success: false,
+        message: "Email is not verified",
+      });
+      VerifiedSessionMap.delete(token);
+      return;
+    }
     const username = email.split("@")[0];
-    const user = await UserAccount.create({
+    await UserAccount.create({
       email,
       password,
       username,
     });
+
+    res.clearCookie("verified_token");
     res.status(200).json({
       success: true,
       message: "User Created",
     });
   } catch (err) {
     console.log("[ERROR IN CREATING ACCOUNT] : ", err.message);
-    res.status(400).json({
+    res.status(500).json({
       success: false,
       message: "Error in creating account",
     });
