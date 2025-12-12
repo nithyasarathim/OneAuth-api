@@ -10,13 +10,14 @@ redis.on("error", (err) => {
 });
 
 const connectCache = async () => {
-    try {
-        await redis.connect();
-        console.log("Redis Connection : SUCCESS");
-    } catch (err) {
-        console.log("Redis Connection : FAILURE");
-        process.exit(1);
-    }
+  try {
+    await redis.connect();
+    console.log("Redis Connection : SUCCESS");
+  } catch (err) {
+    console.log("Redis Connection : FAILURE");
+    console.log(err);
+    process.exit(1);
+  }
 };
 
 export { redis, connectCache };
