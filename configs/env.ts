@@ -9,6 +9,8 @@ interface Config{
     emailServerUrl: string;
     emailServerSecret: string;
     cacheServerUrl: string;
+    otpTtl: number;
+    verifiedTokenTtl: number;
 }
 
 const requireEnv=function (value: string) {
@@ -25,7 +27,9 @@ const config: Config={
     windowMs: Number(requireEnv("ONE_AUTH_RATE_LIMIT_WINDOW_SIZE")),
     emailServerUrl: requireEnv("ONE_MAIL_SERVER_URL"),
     emailServerSecret: requireEnv("ONE_MAIL_SERVER_SECRET"),
-    cacheServerUrl: requireEnv("ONE_MAIL_CACHE_SERVER_URL")
+    cacheServerUrl: requireEnv("ONE_MAIL_CACHE_SERVER_URL"),
+    otpTtl: Number(requireEnv("ONE_MAIL_OTP_TTL")),
+    verifiedTokenTtl:Number(requireEnv("ONE_MAIL_VERIFIED_TOKEN_TTL"))
 }
 
 export default config;
