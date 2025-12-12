@@ -92,22 +92,22 @@ const verifyOTP = async (req: Request, res: Response): Promise<void> => {
 const createAccount = async (req: Request, res: Response): Promise<void> => {
   try {
     const { email, password } = req.body;
-  const username = email.split("@")[0];
+    const username = email.split("@")[0];
     const user = await UserAccount.create({
       email,
       password,
-      username
+      username,
     });
     res.status(200).json({
       success: true,
-      message:"User Created"
-    })
+      message: "User Created",
+    });
   } catch (err) {
     console.log("[ERROR IN CREATING ACCOUNT] : ", err.message);
     res.status(400).json({
       success: false,
-      message:"Error in creating account"
-    })
+      message: "Error in creating account",
+    });
   }
 };
 
