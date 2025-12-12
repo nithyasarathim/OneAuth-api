@@ -117,13 +117,14 @@ const createAccount = async (req: Request, res: Response): Promise<void> => {
       });
       return;
     }
-    const session = VerifiedSessionMap.get(token);
-    if (!session || session.email !== email || Date.now() > session.expiresAt) {
+    const sessionEmail = await redis.get(`verify:${token}`);
+
+    if (!sessionEmail || sessionEmail !== email) {
       res.status(400).json({
         success: false,
         message: "Email is not verified",
       });
-      VerifiedSessionMap.delete(token);
+      redis.del(`verify:${token}`);
       return;
     }
     const username = email.split("@")[0];
@@ -136,7 +137,7 @@ const createAccount = async (req: Request, res: Response): Promise<void> => {
       password: normalizedPassword,
       username,
     });
-    VerifiedSessionMap.delete(token);
+    redis.del(`verify:${token}`);
     res.clearCookie("verified_token");
     res.status(200).json({
       success: true,
