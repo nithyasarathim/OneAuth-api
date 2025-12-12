@@ -8,7 +8,7 @@ import UserAccount from "../modals/UserAccount";
 
 const verifyEmail = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { email } = req.body;
+    const email = req.body.email?.trim().toLowerCase();
     const otp = crypto.randomInt(1000, 9999).toString();
     const expiresAt = Date.now() + 5 * 60 * 1000;
     console.log(email);
@@ -37,7 +37,8 @@ const verifyEmail = async (req: Request, res: Response): Promise<void> => {
 
 const verifyOTP = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { email, otp } = req.body;
+    const email = req.body.email?.trim().toLowerCase();
+    const { otp } = req.body;
     console.log(email);
     if (!email || !otp) {
       console.log("Email and OTP required");
@@ -79,7 +80,7 @@ const verifyOTP = async (req: Request, res: Response): Promise<void> => {
     const token = crypto.randomBytes(32).toString("hex");
     const tokenExpiresAt = Date.now() + 5 * 60 * 1000;
 
-    VerifiedSessionMap.set(token, { email, expiresAt:tokenExpiresAt });
+    VerifiedSessionMap.set(token, { email, expiresAt: tokenExpiresAt });
     res.cookie("verified_token", token, {
       httpOnly: true,
       secure: true,
@@ -102,7 +103,8 @@ const verifyOTP = async (req: Request, res: Response): Promise<void> => {
 
 const createAccount = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { email, password } = req.body;
+    const email = req.body.email?.trim().toLowerCase();
+    const { password } = req.body;
 
     const token = req.cookies?.verified_token;
     if (!token) {
@@ -126,8 +128,11 @@ const createAccount = async (req: Request, res: Response): Promise<void> => {
       return;
     }
     const username = email.split("@")[0];
+
+    const normalizedEmail = email;
+
     await UserAccount.create({
-      email,
+      email:normalizedEmail,
       password,
       username,
     });
