@@ -60,22 +60,12 @@ const verifyOTP = async (req: Request, res: Response): Promise<void> => {
       });
       return;
     }
-    const record = OtpMap.get(email);
-    if (!record) {
+    const storedOtp = await redis.get(`otp:${email}`);
+    if (!storedOtp) {
       console.log("OTP not found");
       res.status(400).json({
         success: false,
         message: "OTP not found or expired",
-      });
-      return;
-    }
-    const { otp: storedOtp, expiresAt } = record;
-    if (Date.now() > expiresAt) {
-      console.log("OTP has expired");
-      OtpMap.delete(email);
-      res.status(400).json({
-        success: false,
-        message: "OTP has expired",
       });
       return;
     }
@@ -88,16 +78,17 @@ const verifyOTP = async (req: Request, res: Response): Promise<void> => {
       });
       return;
     }
-    OtpMap.delete(email);
-    const token = crypto.randomBytes(32).toString("hex");
-    const tokenExpiresAt = Date.now() + 5 * 60 * 1000;
 
-    VerifiedSessionMap.set(token, { email, expiresAt: tokenExpiresAt });
+    await redis.del(`otp:${email}`)
+    const token = crypto.randomBytes(32).toString("hex");
+
+    await redis.set(`verify:${token}`,email,{EX:VERIFIED_TOKEN_TTL})
+
     res.cookie("verified_token", token, {
       httpOnly: true,
       secure: true,
       sameSite: "strict",
-      maxAge: 5 * 60 * 1000,
+      maxAge: VERIFIED_TOKEN_TTL*1000,
     });
     res.status(200).json({
       success: true,
