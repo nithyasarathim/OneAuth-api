@@ -131,7 +131,7 @@ const createAccount = async (req: Request, res: Response): Promise<void> => {
       password,
       username,
     });
-
+    VerifiedSessionMap.delete(token);
     res.clearCookie("verified_token");
     res.status(200).json({
       success: true,
