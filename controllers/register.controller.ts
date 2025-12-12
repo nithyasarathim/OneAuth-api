@@ -76,10 +76,10 @@ const verifyOTP = async (req: Request, res: Response): Promise<void> => {
       return;
     }
     OtpMap.delete(email);
-    const token = crypto.randomBytes(32).toString();
+    const token = crypto.randomBytes(32).toString("hex");
     const tokenExpiresAt = Date.now() + 5 * 60 * 1000;
 
-    VerifiedSessionMap.set(token, { email, tokenExpiresAt });
+    VerifiedSessionMap.set(token, { email, expiresAt:tokenExpiresAt });
     res.cookie("verified_token", token, {
       httpOnly: true,
       secure: true,
@@ -116,7 +116,7 @@ const createAccount = async (req: Request, res: Response): Promise<void> => {
     if (
       !session ||
       session.email !== email ||
-      Date.now() > session.tokenExpiresAt
+      Date.now() > session.expiresAt
     ) {
       res.status(400).json({
         success: false,
