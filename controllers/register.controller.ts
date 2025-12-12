@@ -86,7 +86,7 @@ const verifyOTP = async (req: Request, res: Response): Promise<void> => {
 
     res.cookie("verified_token", token, {
       httpOnly: true,
-      secure: true,
+      // secure: true,
       sameSite: "strict",
       maxAge: VERIFIED_TOKEN_TTL*1000,
     });
@@ -130,7 +130,7 @@ const createAccount = async (req: Request, res: Response): Promise<void> => {
     const username = email.split("@")[0];
 
     const normalizedEmail = email.trim().toLowerCase();
-    const normalizedPassword = bcrypt.hash(password.trim().toLowerCase(), 10);
+    const normalizedPassword = await bcrypt.hash(password.trim(), 10);
 
     await UserAccount.create({
       email: normalizedEmail,

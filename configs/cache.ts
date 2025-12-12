@@ -6,7 +6,7 @@ const redis = createClient({
 });
 
 redis.on("error", (err) => {
-  console.log("[REDIS CONNECTION ERROR] :", err.message);
+  console.log("[REDIS CONNECTION ERROR] :", err);
 });
 
 const connectCache = async () => {
