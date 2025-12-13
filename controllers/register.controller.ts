@@ -69,7 +69,6 @@ const verifyOTP = async (req: Request, res: Response): Promise<void> => {
     }
 
     if (otp !== storedOtp) {
-      console.log("Invalid OTP");
       res.status(400).json({
         success: false,
         message: "Invalid One-time password",
@@ -145,14 +144,14 @@ const createAccount = async (req: Request, res: Response): Promise<void> => {
     const sessionToken = crypto.randomBytes(32).toString("hex");
 
     await redis.set(`session:${sessionToken}`, user._id.toString(), {
-      EX: 50000,
+      EX:config.sessionCookieTtl,
     });
 
     res.cookie("session_token", sessionToken, {
       httpOnly: true,
       secure: true,
       sameSite: "lax",
-      maxAge: 50000,
+      maxAge: config.sessionCookieTtl,
     });
 
     res.status(200).json({
