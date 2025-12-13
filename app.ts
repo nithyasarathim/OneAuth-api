@@ -5,13 +5,13 @@ import cookieParser from "cookie-parser";
 import errorHandler from "./middlewares/errorHandler";
 import requestLogger from "./middlewares/requestLogger";
 import registerRouter from "./routers/register.route";
-
+import config from "./configs/env";
 
 const app = express();
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: config.clientDomainUrl,
     credentials: true,
   })
 );

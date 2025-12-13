@@ -12,6 +12,7 @@ interface Config {
   otpTtl: number;
   verifiedTokenTtl: number;
   clientDomainUrl: string;
+  sessionCookieTtl: number;
 }
 
 const requireEnv = function (value: string) {
@@ -33,7 +34,8 @@ const config: Config = {
   cacheServerUrl: requireEnv("ONE_AUTH_CACHE_SERVER_URL"),
   otpTtl: Number(requireEnv("ONE_AUTH_OTP_TTL")),
   verifiedTokenTtl: Number(requireEnv("ONE_AUTH_VERIFIED_TOKEN_TTL")),
-  clientDomainUrl: requireEnv("ONE_AUTH_CLIENT_DOMAIN_URL")
+  clientDomainUrl: requireEnv("ONE_AUTH_CLIENT_DOMAIN_URL"),
+  sessionCookieTtl: Number(requireEnv("ONE_AUTH_SESSION_COOKIE_TTL"))
 };
 
 export default config;

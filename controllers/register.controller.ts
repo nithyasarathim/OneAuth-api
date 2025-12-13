@@ -134,19 +134,33 @@ const createAccount = async (req: Request, res: Response): Promise<void> => {
     const normalizedEmail = email.trim().toLowerCase();
     const normalizedPassword = await bcrypt.hash(password.trim(), 10);
 
-    await UserAccount.create({
+    const user = await UserAccount.create({
       email: normalizedEmail,
       password: normalizedPassword,
       username,
     });
     redis.del(`verify:${token}`);
     res.clearCookie("verified_token");
+
+    const sessionToken = crypto.randomBytes(32).toString("hex");
+
+    await redis.set(`session:${sessionToken}`, user._id.toString(), {
+      EX: 50000,
+    });
+
+    res.cookie("session_token", sessionToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "lax",
+      maxAge: 50000,
+    });
+
     res.status(200).json({
       success: true,
       message: "User Created",
     });
-  } catch (err) {
-    console.log("[ERROR IN CREATING ACCOUNT] : ", err.message);
+  } catch (err: unknown) {
+    console.log("[ERROR IN CREATING ACCOUNT] : ", err);
     res.status(500).json({
       success: false,
       message: "Error in creating account",
