@@ -45,7 +45,11 @@ const login = async (req: Request, res: Response): Promise<void> => {
             sameSite: "lax",
             maxAge: config.sessionCookieTtl * 1000,
         });
-        
+
+        res.status(200).json({
+            success: true,
+            message:"Login Successful"
+        })
     } catch (err) {
         console.log("[LOGIN ERROR] :", err);
         res.status(500).json({
