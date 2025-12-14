@@ -45,6 +45,7 @@ const login = async (req: Request, res: Response): Promise<void> => {
             sameSite: "lax",
             maxAge: config.sessionCookieTtl * 1000,
         });
+        
     } catch (err) {
         console.log("[LOGIN ERROR] :", err);
         res.status(500).json({
@@ -54,7 +55,32 @@ const login = async (req: Request, res: Response): Promise<void> => {
     }
 };
 
+const logout = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const sessionToken = req.cookies?.session_token;
+        if (sessionToken) {
+            await redis.del(`session:${sessionToken}`);
+        }
+        res.clearCookie("session_token", {
+            httpOnly: true,
+            secure: true,
+            sameSite: "lax",
+        });
+        res.status(200).json({
+            success: true,
+            message: "Logged out successfully"
+        });
+    } catch (err) {
+        console.log("[LOGOUT ERROR]:",err);
+        res.status(500).json({
+            success: false,
+            message: "Error during logout",
+        });
+        return;
+    }
+}
 
 export {
-    login
+    login,
+    logout
 }
