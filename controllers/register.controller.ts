@@ -144,7 +144,7 @@ const createAccount = async (req: Request, res: Response): Promise<void> => {
     const sessionToken = crypto.randomBytes(32).toString("hex");
 
     await redis.set(`session:${sessionToken}`, user._id.toString(), {
-      EX:config.sessionCookieTtl,
+      EX: config.sessionCookieTtl,
     });
 
     res.cookie("session_token", sessionToken, {
