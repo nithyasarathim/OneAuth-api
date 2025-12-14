@@ -8,7 +8,7 @@ import { redis } from "../configs/cache";
 
 const login = async (req: Request, res: Response): Promise<void> => {
     try {
-        const email = req.body.email.trim().toLowerCase();
+        const email = req.body.email?.trim().toLowerCase();
         const { password } = req.body;
 
         if (!email || !password) {
