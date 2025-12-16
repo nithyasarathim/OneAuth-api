@@ -3,9 +3,11 @@ import { Router } from "express";
 import { login, logout } from "../controllers/login.controller";
 
 import limitRate from "../middlewares/rateLimiter";
+import authorize from "../middlewares/authenticator";
 
-const loginRouter = Router();
+const SessionRouter = Router();
 
-loginRouter.post("/", limitRate(2), login);
+SessionRouter.post("/login", limitRate(8), login);
+SessionRouter.post("/logout", limitRate(5), authorize, logout);
 
-export default loginRouter;
+export default SessionRouter;

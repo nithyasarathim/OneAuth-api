@@ -22,7 +22,8 @@ app.use(cookieParser());
 app.use(requestLogger);
 
 app.use("/auth/register", registerRouter);
-app.use("/auth/login", loginRouter);
+app.use("/auth/session", sessionRouter);
+
 
 app.use(errorHandler);
 
