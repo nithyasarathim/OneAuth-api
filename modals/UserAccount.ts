@@ -4,7 +4,7 @@ const { Schema } = mongoose;
 const teamSchema = new Schema(
   {
     teamName: { type: String, required: true, trim: true },
-    role: { type: String, enum: ["member", "lead", "manager"], default: "member" },
+    role: { type: String, default: "member" },
   },
   { _id: false }
 );
@@ -12,7 +12,7 @@ const teamSchema = new Schema(
 const projectSchema = new Schema(
   {
     projectName: { type: String, required: true, trim: true },
-    role: { type: String, enum: ["developer", "tester", "manager"], default: "developer" },
+    role: { type: String, default:"member" },
     teamName: { type: String, required: true, trim: true },
   },
   { _id: false }
