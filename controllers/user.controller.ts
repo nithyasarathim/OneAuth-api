@@ -15,6 +15,7 @@ const fetchPersonalData = async (req: Request, res: Response, next:NextFunction)
         }
         const user = await UserAccount.findById(userId).select("-password");
         if (!user) {
+            redis.del(`session:${sessionToken}`);
             throw new ApiError("Invalid user token", 401);
         }
         res.status(200).json({
