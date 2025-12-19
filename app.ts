@@ -6,6 +6,7 @@ import errorHandler from "./middlewares/errorHandler";
 import requestLogger from "./middlewares/requestLogger";
 import registerRouter from "./routers/register.route";
 import sessionRouter from "./routers/login.route";
+import userRouter from "./routers/user.route";
 import config from "./configs/env";
 
 const app = express();
@@ -23,7 +24,7 @@ app.use(requestLogger);
 
 app.use("/auth/register", registerRouter);
 app.use("/auth/session", sessionRouter);
-
+app.use("/users", userRouter);
 
 app.use(errorHandler);
 
