@@ -11,6 +11,7 @@ const fetchPersonalData = async (req: Request, res: Response, next:NextFunction)
         }
         const userId = await redis.get(`session:${sessionToken}`);
         if (!userId) {
+            redis.del(`session:${sessionToken}`);
             throw new ApiError("Invalid or expired session", 401);
         }
         const user = await UserAccount.findById(userId).select("-password");
