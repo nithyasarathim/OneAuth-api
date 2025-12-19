@@ -1,28 +1,37 @@
-import type { Request, Response } from "express";
+import type { Request, Response, NextFunction } from "express";
 import crypto from "node:crypto";
 import bcrypt from "bcrypt";
 import config from "../configs/env";
 import { sendVerificationEmail } from "../configs/axios/email.axios";
 import UserAccount from "../modals/UserAccount";
 import { redis } from "../configs/cache";
+import ApiError from "../errors/api.error";
 
 const OTP_TTL = config.otpTtl;
 const VERIFIED_TOKEN_TTL = config.verifiedTokenTtl;
 
-const verifyEmail = async (req: Request, res: Response): Promise<void> => {
+const normalizeEmail = (email?: string): string => {
+  if (!email) throw new ApiError("Email is required", 400);
+  return email.trim().toLowerCase();
+};
+
+const generateOTP = () => crypto.randomInt(1000, 9999).toString();
+const generateToken = () => crypto.randomBytes(32).toString("hex");
+
+const verifyEmail = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   try {
-    const email = req.body.email?.trim().toLowerCase();
+    const email = normalizeEmail(req.body.email);
 
     const existingUser = await UserAccount.findOne({ email });
     if (existingUser) {
-      res.status(400).json({
-        success: false,
-        message: "Email already in use !",
-      });
-      return;
+      throw new ApiError("Email already in use", 409);
     }
 
-    const otp = crypto.randomInt(1000, 9999).toString();
+    const otp = generateOTP();
     const timestamp = Date.now().toString();
     const signature = crypto
       .createHmac("sha256", config.emailServerSecret)
@@ -34,52 +43,41 @@ const verifyEmail = async (req: Request, res: Response): Promise<void> => {
 
     res.status(200).json({
       success: true,
-      message: "OTP Sent successfully",
+      message: "OTP sent successfully",
     });
   } catch (err) {
-    console.log("ERROR VERIFYING EMAIL :", err);
-    res.status(500).json({
-      success: false,
-      message: "Error in sending OTP",
-    });
+    next(err);
   }
 };
 
-const verifyOTP = async (req: Request, res: Response): Promise<void> => {
+const verifyOTP = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   try {
-    const email = req.body.email?.trim().toLowerCase();
+    const email = normalizeEmail(req.body.email);
     const { otp } = req.body;
-    console.log(email);
-    if (!email || !otp) {
-      console.log("Email and OTP required");
-      res.status(500).json({
-        success: false,
-        message: "Email and OTP required",
-      });
-      return;
+
+    if (!otp) {
+      throw new ApiError("OTP is required", 400);
     }
+
     const storedOtp = await redis.get(`otp:${email}`);
     if (!storedOtp) {
-      console.log("OTP not found");
-      res.status(400).json({
-        success: false,
-        message: "OTP not found or expired",
-      });
-      return;
+      throw new ApiError("OTP expired or not found", 410);
     }
 
     if (otp !== storedOtp) {
-      res.status(400).json({
-        success: false,
-        message: "Invalid One-time password",
-      });
-      return;
+      throw new ApiError("Invalid OTP", 400);
     }
 
     await redis.del(`otp:${email}`);
-    const token = crypto.randomBytes(32).toString("hex");
 
-    await redis.set(`verify:${token}`, email, { EX: VERIFIED_TOKEN_TTL });
+    const token = generateToken();
+    await redis.set(`verify:${token}`, email, {
+      EX: VERIFIED_TOKEN_TTL,
+    });
 
     res.cookie("verified_token", token, {
       httpOnly: true,
@@ -88,61 +86,52 @@ const verifyOTP = async (req: Request, res: Response): Promise<void> => {
       maxAge: VERIFIED_TOKEN_TTL * 1000,
     });
 
-    console.log(res.cookie.verified_token);
-
     res.status(200).json({
       success: true,
-      message: "OTP is valid",
+      message: "OTP verified",
     });
-    return;
   } catch (err) {
-    console.log("Internal server error");
-    res.status(500).json({
-      success: false,
-      message: "Internal server Error",
-    });
-    console.log("[OTP VALIDATION ERROR] " + err.stack);
+    next(err);
   }
 };
 
-const createAccount = async (req: Request, res: Response): Promise<void> => {
+const createAccount = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   try {
-    const email = req.body.email?.trim().toLowerCase();
-    const { password } = req.body;
-
+    const email = normalizeEmail(req.body.email);
+    const password = req.body.password?.trim();
     const token = req.cookies?.verified_token;
-    if (!token) {
-      res.status(400).json({
-        success: false,
-        message: "Unauthorized request",
-      });
-      return;
-    }
-    const sessionEmail = await redis.get(`verify:${token}`);
 
-    if (!sessionEmail || sessionEmail !== email) {
-      res.status(400).json({
-        success: false,
-        message: "Email is not verified",
-      });
-      redis.del(`verify:${token}`);
-      return;
+    if (!password) {
+      throw new ApiError("Password is required", 400);
     }
+
+    if (!token) {
+      throw new ApiError("Email verification required", 401);
+    }
+
+    const verifiedEmail = await redis.get(`verify:${token}`);
+    if (verifiedEmail !== email) {
+      await redis.del(`verify:${token}`);
+      throw new ApiError("Email not verified", 401);
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
     const username = email.split("@")[0];
 
-    const normalizedEmail = email.trim().toLowerCase();
-    const normalizedPassword = await bcrypt.hash(password.trim(), 10);
-
     const user = await UserAccount.create({
-      email: normalizedEmail,
-      password: normalizedPassword,
+      email,
+      password: hashedPassword,
       username,
     });
-    redis.del(`verify:${token}`);
+
+    await redis.del(`verify:${token}`);
     res.clearCookie("verified_token");
 
-    const sessionToken = crypto.randomBytes(32).toString("hex");
-
+    const sessionToken = generateToken();
     await redis.set(`session:${sessionToken}`, user._id.toString(), {
       EX: config.sessionCookieTtl,
     });
@@ -151,19 +140,15 @@ const createAccount = async (req: Request, res: Response): Promise<void> => {
       httpOnly: true,
       secure: true,
       sameSite: "lax",
-      maxAge: config.sessionCookieTtl,
+      maxAge: config.sessionCookieTtl * 1000,
     });
 
-    res.status(200).json({
+    res.status(201).json({
       success: true,
-      message: "User Created",
+      message: "Account created successfully",
     });
-  } catch (err: unknown) {
-    console.log("[ERROR IN CREATING ACCOUNT] : ", err);
-    res.status(500).json({
-      success: false,
-      message: "Error in creating account",
-    });
+  } catch (err) {
+    next(err);
   }
 };
 
