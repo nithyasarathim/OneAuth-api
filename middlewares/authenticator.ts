@@ -17,10 +17,12 @@ const authorize = async (req: Request, _res: Response, next: NextFunction) => {
 
     const user = await UserAccount.findById(userId).select("-password");
     if (!user) {
+      await redis.del(`session:${token}`);
       throw new ApiError("Unauthorized", 401);
     }
 
-    req.user = user;
+    req.userId= userId;
+
     next();
   } catch (err) {
     next(err);
