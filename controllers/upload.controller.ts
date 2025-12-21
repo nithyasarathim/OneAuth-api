@@ -9,10 +9,28 @@ const uploadAvatar = async (req: Request, res: Response) => {
     const userId = req.userId;
 
     if (!image) {
-      return res.status(400).json({
-        success: false,
-        message: "Image required",
-      });
+      throw new ApiError("Image required", 400);
+    }
+
+    const existingUser = await UserAccount.findById(userId).select(
+      "profileFileId"
+    );
+
+    if (!existingUser) {
+      throw new ApiError("User Not Found", 404);
+    }
+    if (
+      typeof existingUser.profileFileId === "string" &&
+      existingUser.profileFileId.trim() !== ""
+    ) {
+      try {
+        await imagekit.deleteFile(existingUser.profileFileId);
+      } catch (err) {
+        console.warn(
+          "[AVATAR DELETE WARNING]: Failed to delete old avatar",
+          err
+        );
+      }
     }
 
     const uploadResult = await imagekit.upload({
@@ -20,13 +38,16 @@ const uploadAvatar = async (req: Request, res: Response) => {
       fileName: `avatar-${userId}-${Date.now()}.webp`,
       folder: "/avatars",
       transformation: {
-        pre: "w-256,h-256,c-fill,q-auto,f-webp",
+        pre: "w-256,h-256,c-fill,q-80,f-webp",
       },
     });
 
     const updatedUser = await UserAccount.findOneAndUpdate(
       { _id: userId },
-      { profileUrl: uploadResult.url },
+      {
+        profileUrl: uploadResult.url,
+        profileFileId: uploadResult.fileId,
+      },
       { new: true }
     ).select("profileUrl");
 

@@ -20,6 +20,7 @@ const userSchema = new Schema(
     },
     role: { type: String, enum: ["student", "admin"], default: "student" },
     profileUrl: { type: String, default: "" },
+    profileFileId: { type: String, default: "" },
     skills: { type: [String], default: [] },
     linkedinUrl: { type: String, default: "" },
     githubUrl: { type: String, default: "" },
