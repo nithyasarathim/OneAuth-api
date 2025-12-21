@@ -1,7 +1,6 @@
 import type { NextFunction, Request, Response } from 'express';
 import UserAccount from '../modals/UserAccount';
 import ApiError from '../errors/api.error';
-import { redis } from '../configs/cache';
 
 const fetchPersonalData = async (req: Request, res: Response, next:NextFunction): Promise<void> => {
     try {
@@ -68,6 +67,7 @@ const updatePersonalData = async (req: Request, res: Response, next: NextFunctio
         next(err);
     }
 };
+
 
 export {
     fetchPersonalData,

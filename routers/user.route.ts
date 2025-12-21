@@ -8,4 +8,5 @@ const userRouter = Router();
 userRouter.get("/me", limitRate(60), authorize, fetchPersonalData);
 userRouter.patch("/me", limitRate(10), authorize, updatePersonalData);
 
+
 export default userRouter;

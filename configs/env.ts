@@ -13,6 +13,9 @@ interface Config {
   verifiedTokenTtl: number;
   clientDomainUrl: string;
   sessionCookieTtl: number;
+  CdnPrivateKey: string;
+  CdnPublicKey: string;
+  CdnPublicUrl: string;
 }
 
 const requireEnv = function (value: string) {
@@ -35,7 +38,10 @@ const config: Config = {
   otpTtl: Number(requireEnv("ONE_AUTH_OTP_TTL")),
   verifiedTokenTtl: Number(requireEnv("ONE_AUTH_VERIFIED_TOKEN_TTL")),
   clientDomainUrl: requireEnv("ONE_AUTH_CLIENT_DOMAIN_URL"),
-  sessionCookieTtl: Number(requireEnv("ONE_AUTH_SESSION_COOKIE_TTL"))
+  sessionCookieTtl: Number(requireEnv("ONE_AUTH_SESSION_COOKIE_TTL")),
+  CdnPublicKey: requireEnv("ONE_AUTH_IMAGE_KIT_PUBLIC_KEY"),
+  CdnPrivateKey: requireEnv("ONE_AUTH_IMAGE_KIT_PRIVATE_KEY"),
+  CdnPublicUrl: requireEnv("ONE_AUTH_IMAGE_KIT_PUBLIC_URL"),
 };
 
 export default config;
