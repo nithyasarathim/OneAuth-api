@@ -41,12 +41,10 @@ const uploadAvatar = async (req: Request, res: Response) => {
       success: true,
       profileUrl: uploadResult.url,
     });
-  } catch (err:unknown) {
-      console.log("[AVATAR UPLOAD ERROR] :", err.message);
-      throw new ApiError("Failed to upload avatar", 400);
+  } catch (err: unknown) {
+    console.log("[AVATAR UPLOAD ERROR] :", err);
+    throw new ApiError("Failed to upload avatar", 400);
   }
 };
 
-export {
-    uploadAvatar
-}
+export { uploadAvatar };

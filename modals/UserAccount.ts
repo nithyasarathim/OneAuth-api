@@ -19,7 +19,7 @@ const userSchema = new Schema(
       default: null,
     },
     role: { type: String, enum: ["student", "admin"], default: "student" },
-    profilePicture: { type: String, default: "" },
+    profileUrl: { type: String, default: "" },
     skills: { type: [String], default: [] },
     linkedinUrl: { type: String, default: "" },
     githubUrl: { type: String, default: "" },
