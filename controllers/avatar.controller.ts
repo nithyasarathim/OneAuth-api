@@ -7,15 +7,12 @@ const uploadAvatar = async (req: Request, res: Response) => {
   try {
     const { image } = req.body;
     const userId = req.userId;
-
     if (!image) {
       throw new ApiError("Image required", 400);
     }
-
     const existingUser = await UserAccount.findById(userId).select(
       "profileFileId"
     );
-
     if (!existingUser) {
       throw new ApiError("User Not Found", 404);
     }
@@ -32,7 +29,6 @@ const uploadAvatar = async (req: Request, res: Response) => {
         );
       }
     }
-
     const uploadResult = await imagekit.upload({
       file: image,
       fileName: `avatar-${userId}-${Date.now()}.webp`,
@@ -57,7 +53,6 @@ const uploadAvatar = async (req: Request, res: Response) => {
         message: "User not found",
       });
     }
-
     return res.status(200).json({
       success: true,
       profileUrl: uploadResult.url,
@@ -68,4 +63,44 @@ const uploadAvatar = async (req: Request, res: Response) => {
   }
 };
 
-export { uploadAvatar };
+const removeAvatar = async (req: Request, res: Response) => {
+  try {
+    const userId = req.userId;
+    const existingUser = await UserAccount.findById(userId).select(
+      "profileFileId profileUrl"
+    );
+    if (!existingUser) {
+      throw new ApiError("User not found", 404);
+    }
+    if (
+      typeof existingUser.profileFileId === "string" &&
+      existingUser.profileFileId.trim() !== ""
+    ) {
+      try {
+        await imagekit.deleteFile(existingUser.profileFileId);
+      } catch (err) {
+        console.error("[AVATAR DELETE ERROR]: ImageKit delete failed", err);
+        throw new ApiError("Failed to delete avatar", 500);
+      }
+    }
+    await UserAccount.findByIdAndUpdate(userId, {
+      $unset: {
+        profileUrl: "",
+        profileFileId: "",
+      },
+    });
+    return res.status(200).json({
+      success: true,
+      message: "Avatar removed successfully",
+    });
+  } catch (err) {
+    console.error("[AVATAR REMOVE ERROR]:", err);
+    if (err instanceof ApiError) {
+      throw err;
+    }
+    throw new ApiError("Failed to remove avatar", 500);
+  }
+};
+
+
+export { uploadAvatar, removeAvatar };

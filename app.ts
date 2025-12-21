@@ -6,9 +6,9 @@ import errorHandler from "./middlewares/errorHandler";
 import requestLogger from "./middlewares/requestLogger";
 import registerRouter from "./routers/register.route";
 import sessionRouter from "./routers/login.route";
-import uploadRouter from "./routers/upload.route";
 import userRouter from "./routers/user.route";
 import config from "./configs/env";
+import avatarRouter from "./routers/avatar.route";
 
 const app = express();
 
@@ -26,7 +26,7 @@ app.use(requestLogger);
 app.use("/auth/register", registerRouter);
 app.use("/auth/session", sessionRouter);
 app.use("/users", userRouter);
-app.use("/upload", uploadRouter);
+app.use("/avatar", avatarRouter);
 
 app.use(errorHandler);
 
