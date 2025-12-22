@@ -10,7 +10,6 @@ const login = async (req: Request, res: Response): Promise<void> => {
   try {
     const email = req.body.email?.trim().toLowerCase();
     const { password } = req.body;
-
     if (!email || !password) {
       res.status(400).json({
         success: false,
