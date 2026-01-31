@@ -10,6 +10,7 @@ import sessionRouter from "./routers/login.route";
 import userRouter from "./routers/user.route";
 import avatarRouter from "./routers/avatar.route";
 import passwordRouter from "./routers/password.route";
+import ssoRouter from "./routers/sso.route";
 
 const app = express();
 
@@ -29,6 +30,7 @@ app.use("/auth/session", sessionRouter);
 app.use("/users", userRouter);
 app.use("/avatar", avatarRouter);
 app.use("/password", passwordRouter);
+app.use("/sso", ssoRouter);
 
 app.use(errorHandler);
 

@@ -16,6 +16,9 @@ interface Config {
   CdnPrivateKey: string;
   CdnPublicKey: string;
   CdnPublicUrl: string;
+  AuthTokenTTL: string;
+  AllowedClientID: string[];
+  AllowedRedirectUrl: string[];
 }
 
 const requireEnv = function (value: string) {
@@ -42,6 +45,9 @@ const config: Config = {
   CdnPublicKey: requireEnv("ONE_AUTH_IMAGE_KIT_PUBLIC_KEY"),
   CdnPrivateKey: requireEnv("ONE_AUTH_IMAGE_KIT_PRIVATE_KEY"),
   CdnPublicUrl: requireEnv("ONE_AUTH_IMAGE_KIT_PUBLIC_URL"),
+  AuthTokenTTL: requireEnv("ONE_AUTH_TOKEN_TTL"),
+  AllowedClientID: requireEnv("ONE_AUTH_ALLOWED_CLIENT_ID").split(','),
+  AllowedRedirectUrl: requireEnv("ONE_AUTH_ALLOWED_REDIRECT_URL").split(',')
 };
 
 export default config;

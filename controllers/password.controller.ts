@@ -61,7 +61,7 @@ const changePassword = async (
     await redis.del(`pwd-session:${userId}`);
     res.clearCookie("pwd-session", {
       httpOnly: true,
-      sameSite: "lax",
+      sameSite: "strict",
       secure: false,
     });
 

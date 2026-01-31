@@ -22,4 +22,18 @@ const sendVerificationEmail = function async(
   });
 };
 
-export { sendVerificationEmail };
+const sendForgetPaswordEmail = function async(
+  email: string,
+  otp: string,
+  timestamp: string,
+  signature: string
+) {
+  return emailAPI.post("/otp/mail/forget-password", {
+    to: email,
+    otp: otp,
+    timestamp: timestamp,
+    signature: signature,
+  });
+};
+
+export { sendVerificationEmail, sendForgetPaswordEmail };
