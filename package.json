@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@types/jsonwebtoken": "^9.0.10",
     "axios": "^1.13.2",
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
@@ -9,6 +10,7 @@
     "express": "^5.2.1",
     "express-rate-limit": "^8.2.1",
     "imagekit": "^6.0.0",
+    "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.0.1",
     "redis": "^5.10.0"
   },

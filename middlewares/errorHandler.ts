@@ -1,6 +1,7 @@
 import EnvError from "../errors/env.error";
 import ApiError from "../errors/api.error";
 import type { Request, Response, NextFunction } from "express";
+import SSOError from "../errors/sso.error";
 
 const errorHandler = function (
   err: any,
@@ -17,6 +18,13 @@ const errorHandler = function (
   }
   if (err instanceof ApiError) {
     console.warn(`[API ERROR] : ${err.message}`);
+    return res.status(err.statusCode).json({
+      message: err.message,
+      success: false,
+    });
+  }
+  if (err instanceof SSOError) {
+    console.warn(`[SSO ERROR] : ${err.message}`);
     return res.status(err.statusCode).json({
       message: err.message,
       success: false,
