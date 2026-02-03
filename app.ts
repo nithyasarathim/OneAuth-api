@@ -11,6 +11,7 @@ import userRouter from "./routers/user.route";
 import avatarRouter from "./routers/avatar.route";
 import passwordRouter from "./routers/password.route";
 import ssoRouter from "./routers/sso.route";
+import resetpwdRouter from "./routers/resetpwd.route";
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.use("/users", userRouter);
 app.use("/avatar", avatarRouter);
 app.use("/password", passwordRouter);
 app.use("/sso", ssoRouter);
+app.use("/auth/password", resetpwdRouter);
 
 app.use(errorHandler);
 

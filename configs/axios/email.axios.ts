@@ -12,7 +12,7 @@ const sendVerificationEmail = function async(
   email: string,
   otp: string,
   timestamp: string,
-  signature: string
+  signature: string,
 ) {
   return emailAPI.post("/otp/mail/register", {
     to: email,
@@ -22,11 +22,11 @@ const sendVerificationEmail = function async(
   });
 };
 
-const sendForgetPaswordEmail = function async(
+const sendForgetPasswordEmail = function async(
   email: string,
   otp: string,
   timestamp: string,
-  signature: string
+  signature: string,
 ) {
   return emailAPI.post("/otp/mail/forget-password", {
     to: email,
@@ -36,4 +36,4 @@ const sendForgetPaswordEmail = function async(
   });
 };
 
-export { sendVerificationEmail, sendForgetPaswordEmail };
+export { sendVerificationEmail, sendForgetPasswordEmail };
