@@ -34,6 +34,7 @@ const sendOtp = async (req: Request, res: Response, next: NextFunction) => {
     await redis.set(`resetpwd:otp:${email}`, otp, { EX: 300 });
 
     return res.status(200).json({
+      success: true,
       message: "OTP sent successfully",
     });
   } catch (error) {
@@ -58,6 +59,7 @@ const verifyOtp = async (req: Request, res: Response, next: NextFunction) => {
     await redis.del(`resetpwd:otp:${email}`);
 
     return res.status(200).json({
+      success: true,
       message: "OTP verified successfully",
     });
   } catch (error) {
@@ -94,6 +96,7 @@ const resetPassword = async (
     await redis.del(`resetpwd:verified:${email}`);
 
     return res.status(200).json({
+      success: true,
       message: "Password reset successfully",
     });
   } catch (error) {
