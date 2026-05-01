@@ -9,13 +9,20 @@ import { redis } from "../configs/cache";
 
 const generateOTP = () => crypto.randomInt(1000, 9999).toString();
 
+const normalizeEmail = (email?: string): string => {
+  if (!email) throw new ApiError("Email is required", 400);
+  const normalized = email.trim().toLowerCase();
+  // Basic email validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(normalized)) {
+    throw new ApiError("Invalid email format", 400);
+  }
+  return normalized;
+};
+
 const sendOtp = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { email } = req.body;
-
-    if (!email) {
-      throw new ApiError("Email is required", 400);
-    }
+    const email = normalizeEmail(req.body.email);
 
     const user = await UserAccount.findOne({ email });
     if (!user) {
@@ -44,10 +51,11 @@ const sendOtp = async (req: Request, res: Response, next: NextFunction) => {
 
 const verifyOtp = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { email, otp } = req.body;
+    const email = normalizeEmail(req.body.email);
+    const { otp } = req.body;
 
-    if (!email || !otp) {
-      throw new ApiError("Email and OTP are required", 400);
+    if (!otp) {
+      throw new ApiError("OTP is required", 400);
     }
 
     const storedOtp = await redis.get(`resetpwd:otp:${email}`);
@@ -73,10 +81,11 @@ const resetPassword = async (
   next: NextFunction,
 ) => {
   try {
-    const { email, newPassword } = req.body;
+    const email = normalizeEmail(req.body.email);
+    const { newPassword } = req.body;
 
-    if (!email || !newPassword) {
-      throw new ApiError("Email and new password are required", 400);
+    if (!newPassword) {
+      throw new ApiError("New password is required", 400);
     }
 
     const isVerified = await redis.get(`resetpwd:verified:${email}`);
