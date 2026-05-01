@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import crypto from "crypto";
+import crypto from "node:crypto";
 import { redis } from "../configs/cache";
 import config from "../configs/env";
 import ApiError from "../errors/api.error";
@@ -140,13 +140,11 @@ const fetchUserInfo = async (
   next: NextFunction,
 ): Promise<void> => {
   try {
-    const authHeader = req.headers.authorization;
-
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    if (!req.headers.authorization?.startsWith("Bearer ")) {
       throw new ApiError("Missing or invalid Authorization header", 401);
     }
 
-    const token = authHeader.split(" ")[1];
+    const token = req.headers.authorization.split(" ")[1];
 
     const decoded = jwt.verify(token, config.JwtSecret) as {
       sub: string;
@@ -160,7 +158,9 @@ const fetchUserInfo = async (
       throw new ApiError("Invalid token type", 401);
     }
 
-    const user = await UserAccount.findById(decoded.sub).select("_id email username description linkedinUrl githubUrl profileUrl");
+    const user = await UserAccount.findById(decoded.sub).select(
+      "_id email username description linkedinUrl githubUrl profileUrl",
+    );
     if (!user) {
       throw new ApiError("User not exists", 404);
     }

@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
-import crypto from "crypto";
+import crypto from "node:crypto";
 import bcrypt from "bcrypt";
 import config from "../configs/env";
 import ApiError from "../errors/api.error";
@@ -12,7 +12,6 @@ const generateOTP = () => crypto.randomInt(1000, 9999).toString();
 const normalizeEmail = (email?: string): string => {
   if (!email) throw new ApiError("Email is required", 400);
   const normalized = email.trim().toLowerCase();
-  // Basic email validation
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(normalized)) {
     throw new ApiError("Invalid email format", 400);
