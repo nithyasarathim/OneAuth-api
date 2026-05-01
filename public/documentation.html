@@ -1,0 +1,1832 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OneAuth API — Documentation</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Nunito+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --bg-primary: #ffffff;
+        --bg-secondary: #f0f9ff;
+        --bg-code: #f8fafc;
+        --bg-table-head: #0ea5e9;
+        --bg-table-alt: #f0f9ff;
+        --color-primary: #000000;
+        --color-secondary: #374151;
+        --color-muted: #6b7280;
+        --color-accent: #0ea5e9;
+        --color-accent-dark: #0284c7;
+        --color-accent-light: #e0f2fe;
+        --color-border: #e2e8f0;
+        --color-code-text: #0369a1;
+        --font-heading: "Poppins", sans-serif;
+        --font-body: "Nunito Sans", sans-serif;
+        --radius: 10px;
+        --radius-sm: 6px;
+        --shadow:
+          0 1px 3px rgba(0, 0, 0, 0.08), 0 4px 16px rgba(14, 165, 233, 0.08);
+        --shadow-md: 0 4px 24px rgba(14, 165, 233, 0.13);
+        --page-margin: 64px;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: var(--font-body);
+        background: var(--bg-primary);
+        color: var(--color-primary);
+        line-height: 1.75;
+        font-size: 15.5px;
+      }
+
+      /* ── SIDEBAR ── */
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: var(--page-margin);
+        width: 260px;
+        height: 100vh;
+        background: var(--bg-primary);
+        border-right: 1.5px solid var(--color-border);
+        overflow: hidden;
+        z-index: 100;
+        padding: 0 0 32px 0;
+      }
+
+      .sidebar-brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 24px 20px 20px;
+        border-bottom: 1.5px solid var(--color-border);
+        margin-bottom: 12px;
+      }
+
+      .sidebar-brand .logo {
+        width: 34px;
+        height: 34px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #0ea5e9;
+        overflow: hidden;
+      }
+
+      .sidebar-brand .logo svg {
+        width: 20px;
+        height: 20px;
+        color: white;
+      }
+
+      .sidebar-brand-name {
+        font-family: var(--font-heading);
+        font-weight: 700;
+        font-size: 15px;
+        color: var(--color-primary);
+        letter-spacing: -0.3px;
+      }
+
+      .sidebar-brand-sub {
+        font-size: 10.5px;
+        color: var(--color-muted);
+        font-family: var(--font-body);
+      }
+
+      .sidebar-section {
+        padding: 4px 12px;
+        margin-bottom: 2px;
+      }
+
+      .sidebar-section-title {
+        font-family: var(--font-heading);
+        font-size: 9.5px;
+        font-weight: 700;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+        color: var(--color-muted);
+        padding: 10px 8px 4px;
+        margin-top: 4px;
+      }
+
+      .sidebar-link {
+        display: block;
+        padding: 5px 8px;
+        border-radius: var(--radius-sm);
+        font-size: 13.5px;
+        color: var(--color-secondary);
+        text-decoration: none;
+        font-family: var(--font-body);
+        font-weight: 400;
+        transition: all 0.15s;
+      }
+
+      .sidebar-link:hover {
+        background: var(--color-accent-light);
+        color: var(--color-accent-dark);
+      }
+
+      .sidebar-coffee {
+        position: absolute;
+        bottom: 60px;
+        left:-10px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--color-border);
+        text-align: center;
+      }
+
+      .sidebar-coffee a {
+        display: inline-block;
+        text-decoration: none;
+      }
+
+      .sidebar-coffee img {
+        max-width: 100%;
+        height: auto;
+      }
+
+      .sidebar-coffee {
+        position: absolute;
+        bottom: 60px;
+        left: 10    px;
+        right: 10px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--color-border);
+        text-align: center;
+      }
+
+      .sidebar-coffee a {
+        display: inline-block;
+        text-decoration: none;
+      }
+
+      .sidebar-coffee img {
+        max-width: 100%;
+        height: auto;
+      }
+
+      .sidebar-credit {
+        position: absolute;
+        bottom: 24px;
+        padding-top: 12px;
+        border-top: 1px solid var(--color-border);
+        text-align: center;
+        left: 30px;
+        font-size: 12px;
+        color: var(--color-muted);
+        font-family: var(--font-body);
+      }
+
+      .sidebar-credit a {
+        color: var(--color-accent);
+        text-decoration: none;
+        font-weight: bolder;
+        font-size: 14px;
+        transition: color 0.15s;
+      }
+
+      .sidebar-credit a:hover {
+        color: var(--color-accent-dark);
+        text-decoration: underline;
+      }
+
+      /* ── MAIN CONTENT ── */
+      .main {
+        margin-left: calc(260px + var(--page-margin));
+        margin-right: var(--page-margin);
+        min-height: 100vh;
+      }
+
+      .hero {
+        background: #ffffff;
+        padding: 50px 64px 48px;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 32px;
+      }
+
+      .hero-logo {
+        flex-shrink: 0;
+        height: 120px;
+        width: auto;
+        object-fit: contain;
+        display: block;
+      }
+
+      .hero-text {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+
+      .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        background: rgba(14, 165, 233, 0.18);
+        border: 1px solid rgba(14, 165, 233, 0.4);
+        color: #0284c7;
+        padding: 5px 14px;
+        border-radius: 99px;
+        font-family: var(--font-heading);
+        font-size: 11.5px;
+        font-weight: 600;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        margin-bottom: 22px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .hero-badge-dot {
+        width: 6px;
+        height: 6px;
+        background: #38bdf8;
+        border-radius: 50%;
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.4;
+        }
+      }
+
+      .hero h1 {
+        font-family: var(--font-heading);
+        font-size: 48px;
+        font-weight: 800;
+        color: #000000;
+        letter-spacing: -1.5px;
+        line-height: 1.1;
+        margin-bottom: 18px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .hero h1 span {
+        color: var(--color-accent);
+      }
+
+      .hero-desc {
+        font-family: var(--font-body);
+        font-size: 16.5px;
+        color: #374151;
+        max-width: 600px;
+        line-height: 1.7;
+        position: relative;
+        z-index: 1;
+        margin-bottom: 32px;
+      }
+
+      .hero-badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        position: relative;
+        z-index: 1;
+        justify-content: center;
+      }
+
+      .tech-badge {
+        background: #f0f9ff;
+        border: 1px solid #bae6fd;
+        color: #0369a1;
+        padding: 6px 14px;
+        border-radius: var(--radius-sm);
+        font-family: var(--font-heading);
+        font-size: 11.5px;
+        font-weight: 600;
+        letter-spacing: 0.4px;
+      }
+
+      /* ── CONTENT BODY ── */
+      .content {
+        max-width: 940px;
+        padding: 20px 64px 80px;
+        margin: 0 auto;
+      }
+
+      /* ── SECTION ── */
+      .section {
+        margin-bottom: 60px;
+      }
+
+      h2 {
+        font-family: var(--font-heading);
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--color-primary);
+        letter-spacing: -0.6px;
+        margin-bottom: 6px;
+        padding-bottom: 12px;
+        border-bottom: 2px solid var(--color-accent);
+        display: inline-block;
+      }
+
+      h3 {
+        font-family: var(--font-heading);
+        font-size: 17px;
+        font-weight: 600;
+        color: var(--color-primary);
+        margin: 28px 0 10px;
+        letter-spacing: -0.3px;
+      }
+
+      p {
+        color: var(--color-secondary);
+        margin-bottom: 14px;
+        font-family: var(--font-body);
+      }
+
+      /* ── CALLOUT ── */
+      .callout {
+        background: var(--color-accent-light);
+        border-left: 4px solid var(--color-accent);
+        padding: 14px 20px;
+        border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        margin: 20px 0;
+        color: var(--color-secondary);
+        font-size: 14.5px;
+      }
+
+      .callout strong {
+        color: var(--color-primary);
+        font-family: var(--font-heading);
+      }
+
+      /* ── TABLES ── */
+      .table-wrap {
+        overflow-x: auto;
+        border-radius: var(--radius);
+        border: 1.5px solid var(--color-border);
+        margin: 20px 0;
+        box-shadow: var(--shadow);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: var(--font-body);
+        font-size: 13.5px;
+      }
+
+      thead tr {
+        background: var(--bg-table-head);
+      }
+
+      thead th {
+        font-family: var(--font-heading);
+        font-weight: 600;
+        font-size: 12px;
+        letter-spacing: 0.5px;
+        color: #ffffff;
+        padding: 11px 16px;
+        text-align: left;
+      }
+
+      tbody tr {
+        border-top: 1px solid var(--color-border);
+      }
+      tbody tr:nth-child(even) {
+        background: var(--bg-table-alt);
+      }
+      tbody tr:hover {
+        background: #dbeafe44;
+      }
+
+      td {
+        padding: 10px 16px;
+        color: var(--color-secondary);
+        vertical-align: top;
+      }
+
+      td:first-child {
+        font-family: var(--font-heading);
+        font-weight: 500;
+        color: var(--color-primary);
+        white-space: nowrap;
+      }
+
+      /* ── CODE ── */
+      code {
+        font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+        font-size: 13px;
+        background: var(--bg-code);
+        color: var(--color-code-text);
+        padding: 2px 6px;
+        border-radius: 4px;
+        border: 1px solid #e0f2fe;
+      }
+
+      pre {
+        background: #0f172a;
+        border-radius: var(--radius);
+        padding: 22px 24px;
+        overflow-x: auto;
+        margin: 20px 0;
+        border: 1px solid #1e293b;
+        box-shadow: var(--shadow-md);
+        position: relative;
+      }
+
+      pre code {
+        background: transparent;
+        color: #e2e8f0;
+        border: none;
+        padding: 0;
+        font-size: 13px;
+        line-height: 1.8;
+      }
+
+      .pre-label {
+        font-family: var(--font-heading);
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: var(--color-accent);
+        margin-bottom: 10px;
+        display: block;
+      }
+
+      /* ── API SURFACE ── */
+      .api-group {
+        margin-bottom: 10px;
+      }
+
+      .api-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 11px 16px;
+        border: 1.5px solid var(--color-border);
+        border-radius: var(--radius-sm);
+        margin-bottom: 6px;
+        background: var(--bg-primary);
+        transition: all 0.15s;
+      }
+
+      .api-row:hover {
+        border-color: var(--color-accent);
+        background: var(--color-accent-light);
+        transform: translateX(3px);
+      }
+
+      .method {
+        font-family: var(--font-heading);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        padding: 3px 9px;
+        border-radius: 4px;
+        min-width: 52px;
+        text-align: center;
+        flex-shrink: 0;
+      }
+
+      .method-get {
+        background: #dcfce7;
+        color: #166534;
+      }
+      .method-post {
+        background: #dbeafe;
+        color: #1e40af;
+      }
+      .method-patch {
+        background: #fef9c3;
+        color: #854d0e;
+      }
+      .method-delete {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+
+      .api-path {
+        font-family: "SF Mono", monospace;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--color-primary);
+        min-width: 260px;
+        flex-shrink: 0;
+      }
+
+      .api-desc {
+        font-family: var(--font-body);
+        font-size: 13.5px;
+        color: var(--color-secondary);
+      }
+
+      /* ── SSO FLOW ── */
+      .flow-sso {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 0;
+        margin: 22px 0;
+        background: var(--bg-code);
+        border: 1.5px solid var(--color-border);
+        border-radius: var(--radius);
+        padding: 20px 24px;
+        row-gap: 10px;
+      }
+
+      .flow-sso .flow-step {
+        display: flex;
+        align-items: center;
+      }
+
+      .flow-node {
+        background: var(--color-accent-light);
+        border: 1.5px solid var(--color-accent);
+        color: var(--color-accent-dark);
+        font-family: var(--font-heading);
+        font-size: 12px;
+        font-weight: 600;
+        padding: 8px 14px;
+        border-radius: var(--radius-sm);
+        white-space: nowrap;
+      }
+
+      .flow-node.dark {
+        background: var(--color-primary);
+        border-color: var(--color-primary);
+        color: #fff;
+      }
+
+      .flow-node.controller {
+        background: #0ea5e9;
+        border-color: #0284c7;
+        color: white;
+      }
+
+      .flow-arrow {
+        color: var(--color-accent);
+        font-size: 18px;
+        padding: 0 6px;
+        flex-shrink: 0;
+      }
+
+      /* ── MIDDLEWARE FLOW ── */
+      .flow {
+        display: flex;
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 6px;
+        margin: 22px 0;
+        background: var(--bg-code);
+        border: 1.5px solid var(--color-border);
+        border-radius: var(--radius);
+        padding: 20px 24px;
+      }
+
+      .dev-credit {
+        text-align: center;
+        font-size: 13px;
+        color: var(--color-muted);
+        margin-top: 20px;
+      }
+
+      .dev-credit a {
+        font-weight: 700;
+        color: var(--color-primary);
+        text-decoration: none;
+      }
+
+      .dev-credit a:hover {
+        color: var(--color-accent);
+      }
+
+      .flow-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .flow-connector {
+        padding-left: 60px;
+        color: var(--color-accent);
+        font-size: 18px;
+        line-height: 1;
+      }
+
+      /* ── ENV TABLE ── */
+      .env-block {
+        background: #0f172a;
+        border-radius: var(--radius);
+        padding: 22px 24px;
+        margin: 20px 0;
+        border: 1px solid #1e293b;
+      }
+
+      .env-line {
+        font-family: "SF Mono", monospace;
+        font-size: 12.5px;
+        line-height: 2;
+        color: #94a3b8;
+      }
+
+      .env-key {
+        color: #7dd3fc;
+      }
+      .env-eq {
+        color: #64748b;
+      }
+      .env-val {
+        color: #a3e635;
+      }
+      .env-comment {
+        color: #475569;
+        font-style: italic;
+      }
+
+      /* ── FOOTER ── */
+      footer {
+        background: #f8fafc;
+        border-top: 1.5px solid var(--color-border);
+        padding: 28px 64px;
+        margin-left: calc(260px + var(--page-margin));
+        margin-right: var(--page-margin);
+      }
+
+      footer p {
+        font-size: 13px;
+        color: var(--color-muted);
+        margin: 0;
+      }
+
+      footer strong {
+        font-family: var(--font-heading);
+        color: var(--color-accent);
+      }
+
+      /* scrollbar */
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 99px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: var(--color-accent);
+      }
+
+      /* lists */
+      ul,
+      ol {
+        padding-left: 22px;
+        color: var(--color-secondary);
+        margin: 10px 0;
+      }
+      li {
+        margin-bottom: 5px;
+        font-family: var(--font-body);
+      }
+
+      hr {
+        border: none;
+        border-top: 1.5px solid var(--color-border);
+        margin: 40px 0;
+      }
+
+      @media (max-width: 900px) {
+        :root {
+          --page-margin: 20px;
+        }
+        .sidebar {
+          display: none;
+        }
+        .main,
+        footer {
+          margin-left: 0;
+          margin-right: var(--page-margin);
+        }
+        .content {
+          padding: 32px 20px 60px;
+        }
+        .hero {
+          padding: 48px 20px 40px;
+        }
+        footer {
+          padding: 24px 20px;
+        }
+        .hero h1 {
+          font-size: 32px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ── SIDEBAR ── -->
+    <nav class="sidebar">
+      <div class="sidebar-brand">
+        <div class="logo">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-user-lock-icon lucide-user-lock"
+          >
+            <path d="M19 16v-2a2 2 0 0 0-4 0v2" />
+            <path d="M9.5 15H7a4 4 0 0 0-4 4v2" />
+            <circle cx="10" cy="7" r="4" />
+            <rect x="13" y="16" width="8" height="5" rx=".899" />
+          </svg>
+        </div>
+        <div>
+          <div class="sidebar-brand-name">OneAuth API</div>
+          <div class="sidebar-brand-sub">Documentation</div>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">Overview</div>
+        <a class="sidebar-link" href="#overview">Service Overview</a>
+        <a class="sidebar-link" href="#sso">SSO Handshake</a>
+        <a class="sidebar-link" href="#architecture">Runtime Architecture</a>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">Security</div>
+        <a class="sidebar-link" href="#security">Middleware</a>
+        <a class="sidebar-link" href="#components">Core Components</a>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">Reference</div>
+        <a class="sidebar-link" href="#env">Environment Variables</a>
+        <a class="sidebar-link" href="#api">API Surface</a>
+        <a class="sidebar-link" href="#setup">Setup</a>
+        <a class="sidebar-link" href="#notes">Operational Notes</a>
+        <a class="sidebar-link" href="#hardening">Production Hardening</a>
+      </div>
+
+      <div class="sidebar-coffee">
+        <a href="https://buymeacoffee.com/nithyasarathim" target="_blank">
+          <img
+            src="https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black"
+            alt="Buy Me a Coffee"
+          />
+        </a>
+      </div>
+
+      <div class="sidebar-credit">
+        Developed by
+        <a href="https://github.com/nithyasarathim" target="_blank"
+          >Nithyasarathim</a
+        >
+      </div>
+    </nav>
+
+    <!-- ── MAIN ── -->
+    <div class="main">
+      <!-- HERO -->
+      <div class="hero">
+        <div class="hero-text">
+          <img src="../assets/logo.png" alt="OneAuth Logo" class="hero-logo" />
+          <div class="hero-badges">
+            <span class="tech-badge">Express 5</span>
+            <span class="tech-badge">MongoDB · Mongoose</span>
+            <span class="tech-badge">Redis Sessions</span>
+            <span class="tech-badge">JWT · SSO</span>
+            <span class="tech-badge">ImageKit CDN</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONTENT -->
+      <div class="content">
+        <!-- OVERVIEW -->
+        <div class="section" id="overview">
+          <h2>Service Overview</h2>
+          <p style="margin-top: 14px">
+            OneAuth API is the backend authority behind the OneAuth SSO
+            platform. It is responsible for proving identity, issuing sessions,
+            validating trusted client applications, and returning signed access
+            tokens that downstream products can trust.
+          </p>
+          <p>The service coordinates:</p>
+          <ul>
+            <li>MongoDB for durable user account records.</li>
+            <li>
+              Redis for session tokens, OTPs, verification tokens, and
+              authorization codes.
+            </li>
+            <li>HTTP-only cookies for browser sessions.</li>
+            <li>JWT access tokens for SSO clients.</li>
+            <li>ImageKit CDN storage for profile avatars.</li>
+            <li>OneMail integration for OTP email delivery.</li>
+          </ul>
+        </div>
+
+        <hr />
+
+        <!-- SSO -->
+        <div class="section" id="sso">
+          <h2>SSO Handshake</h2>
+          <p style="margin-top: 14px">
+            The handshake follows an authorization-code pattern:
+          </p>
+
+          <div class="flow-sso">
+            <div class="flow-step">
+              <div class="flow-node dark">Client App</div>
+              <span class="flow-arrow">→</span>
+            </div>
+            <div class="flow-step">
+              <div class="flow-node">OneAuth Portal</div>
+              <span class="flow-arrow">→</span>
+            </div>
+            <div class="flow-step">
+              <div class="flow-node">Session Check</div>
+              <span class="flow-arrow">→</span>
+            </div>
+            <div class="flow-step">
+              <div class="flow-node">Validate client_id</div>
+              <span class="flow-arrow">→</span>
+            </div>
+            <div class="flow-step">
+              <div class="flow-node">Auth Code (Redis)</div>
+              <span class="flow-arrow">→</span>
+            </div>
+            <div class="flow-step">
+              <div class="flow-node controller">JWT Issued</div>
+            </div>
+          </div>
+
+          <ol style="margin-top: 18px">
+            <li>The product application sends the user to OneAuth.</li>
+            <li>OneAuth validates the user's active session.</li>
+            <li>
+              If no session exists, the user completes login or signup before
+              authorization continues.
+            </li>
+            <li>OneAuth validates the requesting client and redirect URL.</li>
+            <li>A short-lived authorization code is stored in Redis.</li>
+            <li>
+              The product backend exchanges the code and client secret for a
+              signed JWT.
+            </li>
+            <li>
+              The product uses the JWT to request user identity through
+              <code>/sso/userinfo</code>.
+            </li>
+          </ol>
+        </div>
+
+        <hr />
+
+        <!-- ARCHITECTURE -->
+        <div class="section" id="architecture">
+          <h2>Runtime Architecture</h2>
+          <span
+            class="pre-label"
+            style="
+              display: block;
+              margin-top: 14px;
+              color: var(--color-muted);
+              font-family: var(--font-heading);
+              font-size: 11px;
+              font-weight: 600;
+              letter-spacing: 1px;
+            "
+            >Project Structure</span
+          >
+          <pre><code>OneAuth-api/
+  app.ts
+  server.ts
+  configs/
+    cache.ts
+    database.ts
+    env.ts
+    imagekit.ts
+    axios/
+  controllers/
+  errors/
+  middlewares/
+  modals/
+    UserAccount.ts
+  routers/
+  types/
+  utils/</code></pre>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Layer</th>
+                  <th>Responsibility</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>server.ts</td>
+                  <td>
+                    Boots the service, connects MongoDB and Redis, then starts
+                    Express.
+                  </td>
+                </tr>
+                <tr>
+                  <td>app.ts</td>
+                  <td>
+                    Configures Express, CORS, JSON parsing, cookies, routers,
+                    and error handling.
+                  </td>
+                </tr>
+                <tr>
+                  <td>configs/</td>
+                  <td>
+                    Centralized configuration for env, MongoDB, Redis, ImageKit,
+                    and email Axios.
+                  </td>
+                </tr>
+                <tr>
+                  <td>routers/</td>
+                  <td>
+                    HTTP route definitions and per-route middleware composition.
+                  </td>
+                </tr>
+                <tr>
+                  <td>controllers/</td>
+                  <td>
+                    Business logic for registration, login, profile, SSO,
+                    avatar, and password flows.
+                  </td>
+                </tr>
+                <tr>
+                  <td>middlewares/</td>
+                  <td>
+                    Request logging, rate limiting, session authentication, and
+                    session validation.
+                  </td>
+                </tr>
+                <tr>
+                  <td>modals/</td>
+                  <td>
+                    Mongoose data models. The current folder name is
+                    <code>modals</code>, but it serves the model layer.
+                  </td>
+                </tr>
+                <tr>
+                  <td>errors/</td>
+                  <td>
+                    Domain-specific API, SSO, and environment error classes.
+                  </td>
+                </tr>
+                <tr>
+                  <td>utils/</td>
+                  <td>Shared helpers such as client secret validation.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <hr />
+
+        <!-- SECURITY -->
+        <div class="section" id="security">
+          <h2>Security &amp; Middleware</h2>
+          <p style="margin-top: 14px">
+            The API uses a layered request pipeline. Some middleware is global,
+            and some is applied per route so each endpoint can have a limit and
+            authentication policy appropriate to its risk.
+          </p>
+
+          <div class="flow">
+            <div class="flow-row">
+              <div class="flow-node dark" style="min-width: 160px">
+                Incoming Request
+              </div>
+            </div>
+            <div class="flow-connector">↓</div>
+            <div class="flow-row">
+              <div class="flow-node" style="min-width: 160px">
+                requestLogger
+              </div>
+              <span
+                style="
+                  font-family: var(--font-body);
+                  font-size: 12.5px;
+                  color: var(--color-muted);
+                "
+                >Logs method, status, duration, IP, path</span
+              >
+            </div>
+            <div class="flow-connector">↓</div>
+            <div class="flow-row">
+              <div class="flow-node" style="min-width: 160px">rateLimiter</div>
+              <span
+                style="
+                  font-family: var(--font-body);
+                  font-size: 12.5px;
+                  color: var(--color-muted);
+                "
+                >Per-IP, per-route using window size env</span
+              >
+            </div>
+            <div class="flow-connector">↓</div>
+            <div class="flow-row">
+              <div class="flow-node" style="min-width: 160px">
+                authenticator
+              </div>
+              <span
+                style="
+                  font-family: var(--font-body);
+                  font-size: 12.5px;
+                  color: var(--color-muted);
+                "
+                >Reads session_token, attaches req.userId</span
+              >
+            </div>
+            <div class="flow-connector">↓</div>
+            <div class="flow-row">
+              <div class="flow-node" style="min-width: 160px">
+                sessionValidator
+              </div>
+              <span
+                style="
+                  font-family: var(--font-body);
+                  font-size: 12.5px;
+                  color: var(--color-muted);
+                "
+                >Confirms token in Redis (lightweight)</span
+              >
+            </div>
+            <div class="flow-connector">↓</div>
+            <div class="flow-row">
+              <div class="flow-node controller" style="min-width: 160px">
+                Controller
+              </div>
+            </div>
+            <div class="flow-connector">↓</div>
+            <div class="flow-row">
+              <div class="flow-node dark" style="min-width: 160px">
+                errorHandler
+              </div>
+              <span
+                style="
+                  font-family: var(--font-body);
+                  font-size: 12.5px;
+                  color: var(--color-muted);
+                "
+                >Converts domain errors → API responses</span
+              >
+            </div>
+          </div>
+
+          <h3>Protected route examples</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Route</th>
+                  <th>Middleware stack</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>POST /auth/session/logout</td>
+                  <td>limitRate(5) → authenticator → logout</td>
+                </tr>
+                <tr>
+                  <td>GET /users/me</td>
+                  <td>limitRate(60) → authenticator → fetchPersonalData</td>
+                </tr>
+                <tr>
+                  <td>PATCH /users/me</td>
+                  <td>limitRate(10) → authenticator → updatePersonalData</td>
+                </tr>
+                <tr>
+                  <td>POST /avatar/upload</td>
+                  <td>authenticator → limitRate(2) → uploadAvatar</td>
+                </tr>
+                <tr>
+                  <td>GET /sso/authorize</td>
+                  <td>limitRate(20) → authenticator → generateAuthCode</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <hr />
+
+        <!-- COMPONENTS -->
+        <div class="section" id="components">
+          <h2>Core Components</h2>
+
+          <h3>MVC structure</h3>
+          <p>OneAuth API uses a practical MVC-style split:</p>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>MVC Role</th>
+                  <th>Folder</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Model</td>
+                  <td><code>modals/</code></td>
+                  <td>Mongoose schemas and MongoDB collections.</td>
+                </tr>
+                <tr>
+                  <td>View</td>
+                  <td>External clients</td>
+                  <td>
+                    The API is headless. OneAuth Client owns the user-facing
+                    views.
+                  </td>
+                </tr>
+                <tr>
+                  <td>Controller</td>
+                  <td><code>controllers/</code></td>
+                  <td>
+                    Request handling, validation coordination, token generation,
+                    and persistence logic.
+                  </td>
+                </tr>
+                <tr>
+                  <td>Router</td>
+                  <td><code>routers/</code></td>
+                  <td>
+                    URL mapping, HTTP methods, route-level rate limits, and auth
+                    middleware.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>UserAccount schema</h3>
+          <p>
+            <code>modals/UserAccount.ts</code> defines the core account
+            document.
+          </p>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Field</th>
+                  <th>Type</th>
+                  <th>Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>email</td>
+                  <td>String</td>
+                  <td>Required, unique, lowercase, trimmed, indexed.</td>
+                </tr>
+                <tr>
+                  <td>password</td>
+                  <td>String</td>
+                  <td>
+                    Required hashed password, minimum length 6 before hashing.
+                  </td>
+                </tr>
+                <tr>
+                  <td>username</td>
+                  <td>String</td>
+                  <td>Optional display name, defaults to empty string.</td>
+                </tr>
+                <tr>
+                  <td>profileUrl</td>
+                  <td>String</td>
+                  <td>Public avatar URL from ImageKit CDN.</td>
+                </tr>
+                <tr>
+                  <td>profileFileId</td>
+                  <td>String</td>
+                  <td>
+                    ImageKit file identifier for avatar cleanup/replacement.
+                  </td>
+                </tr>
+                <tr>
+                  <td>linkedinUrl</td>
+                  <td>String</td>
+                  <td>Optional profile link.</td>
+                </tr>
+                <tr>
+                  <td>githubUrl</td>
+                  <td>String</td>
+                  <td>Optional profile link.</td>
+                </tr>
+                <tr>
+                  <td>description</td>
+                  <td>String</td>
+                  <td>Optional user bio/about field.</td>
+                </tr>
+                <tr>
+                  <td>createdAt</td>
+                  <td>Date</td>
+                  <td>Explicit creation timestamp.</td>
+                </tr>
+                <tr>
+                  <td>timestamps</td>
+                  <td>true</td>
+                  <td>
+                    Mongoose also maintains <code>createdAt</code> and
+                    <code>updatedAt</code>.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Persistence model</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Store</th>
+                  <th>Reason</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>User account and profile</td>
+                  <td>MongoDB</td>
+                  <td>Durable identity record.</td>
+                </tr>
+                <tr>
+                  <td>Session token</td>
+                  <td>Redis</td>
+                  <td>Fast lookup and TTL-based expiry.</td>
+                </tr>
+                <tr>
+                  <td>Registration OTP</td>
+                  <td>Redis</td>
+                  <td>Short-lived verification secret.</td>
+                </tr>
+                <tr>
+                  <td>Verified email token</td>
+                  <td>Redis + HTTP-only cookie</td>
+                  <td>Bridges OTP verification into account creation.</td>
+                </tr>
+                <tr>
+                  <td>SSO authorization code</td>
+                  <td>Redis</td>
+                  <td>One-time, short-lived code for token exchange.</td>
+                </tr>
+                <tr>
+                  <td>Avatar files</td>
+                  <td>ImageKit</td>
+                  <td>CDN-backed profile image storage.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <hr />
+
+        <!-- ENV -->
+        <div class="section" id="env">
+          <h2>Master Environment &amp; Metrics</h2>
+          <p style="margin-top: 14px">
+            All variables below are required by <code>configs/env.ts</code>. The
+            service fails fast at startup if any required variable is missing.
+          </p>
+
+          <div class="env-block">
+            <div class="env-line">
+              <span class="env-key">ONE_AUTH_SERVER_PORT</span
+              ><span class="env-eq">=</span><span class="env-val">8000</span>
+            </div>
+            <div class="env-line">
+              <span class="env-key">ONE_AUTH_DATABASE_SERVER_URL</span
+              ><span class="env-eq">=</span
+              ><span class="env-val">mongodb://localhost:27017/oneauth</span>
+            </div>
+            <div class="env-line">
+              <span class="env-key">ONE_AUTH_RATE_LIMIT_WINDOW_SIZE</span
+              ><span class="env-eq">=</span><span class="env-val">60000</span>
+            </div>
+            <div class="env-line">
+              <span class="env-key">ONE_MAIL_SERVER_URL</span
+              ><span class="env-eq">=</span
+              ><span class="env-val">http://localhost:7000</span>
+            </div>
+            <div class="env-line">
+              <span class="env-key">ONE_MAIL_SERVER_SECRET</span
+              ><span class="env-eq">=</span
+              ><span class="env-val">replace-with-shared-hmac-secret</span>
+            </div>
+            <div class="env-line">
+              <span class="env-key">ONE_AUTH_CACHE_SERVER_URL</span
+              ><span class="env-eq">=</span
+              ><span class="env-val">redis://localhost:6379</span>
+            </div>
+            <div class="env-line">
+              <span class="env-key">ONE_AUTH_OTP_TTL</span
+              ><span class="env-eq">=</span><span class="env-val">300</span>
+            </div>
+            <div class="env-line">
+              <span class="env-key">ONE_AUTH_VERIFIED_TOKEN_TTL</span
+              ><span class="env-eq">=</span><span class="env-val">300</span>
+            </div>
+            <div class="env-line">
+              <span class="env-key">ONE_AUTH_CLIENT_DOMAIN_URL</span
+              ><span class="env-eq">=</span
+              ><span class="env-val">http://localhost:5173</span>
+            </div>
+            <div class="env-line">
+              <span class="env-key">ONE_AUTH_SESSION_COOKIE_TTL</span
+              ><span class="env-eq">=</span><span class="env-val">604800</span>
+            </div>
+            <div class="env-line">
+              <span class="env-key">ONE_AUTH_IMAGE_KIT_PUBLIC_KEY</span
+              ><span class="env-eq">=</span
+              ><span class="env-val">public_xxxxx</span>
+            </div>
+            <div class="env-line">
+              <span class="env-key">ONE_AUTH_IMAGE_KIT_PRIVATE_KEY</span
+              ><span class="env-eq">=</span
+              ><span class="env-val">private_xxxxx</span>
+            </div>
+            <div class="env-line">
+              <span class="env-key">ONE_AUTH_IMAGE_KIT_PUBLIC_URL</span
+              ><span class="env-eq">=</span
+              ><span class="env-val">https://ik.imagekit.io/your-space</span>
+            </div>
+            <div class="env-line">
+              <span class="env-key">ONE_AUTH_JWT_SECRET</span
+              ><span class="env-eq">=</span
+              ><span class="env-val">replace-with-long-random-secret</span>
+            </div>
+            <div class="env-line">
+              <span class="env-key">ONE_AUTH_ACCESS_TOKEN_TTL</span
+              ><span class="env-eq">=</span><span class="env-val">86400</span>
+            </div>
+            <div class="env-line">
+              <span class="env-key">ONE_AUTH_TOKEN_TTL</span
+              ><span class="env-eq">=</span><span class="env-val">60</span>
+            </div>
+            <div class="env-line">
+              <span class="env-key">ONE_AUTH_ALLOWED_CLIENT_ID</span
+              ><span class="env-eq">=</span
+              ><span class="env-val">oneapp,admin</span>
+            </div>
+            <div class="env-line">
+              <span class="env-key">ONE_AUTH_ALLOWED_REDIRECT_URL</span
+              ><span class="env-eq">=</span
+              ><span class="env-val"
+                >http://localhost:3000/callback,http://localhost:5174/callback</span
+              >
+            </div>
+            <div class="env-line">
+              <span class="env-key">ONE_AUTH_CLIENT_ID_SECRET</span
+              ><span class="env-eq">=</span
+              ><span class="env-val">oneapp:secret-one,admin:secret-two</span>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Variable</th>
+                  <th>Example / Current Metric</th>
+                  <th>Metric</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>ONE_AUTH_SERVER_PORT</td>
+                  <td>8000</td>
+                  <td>Port</td>
+                  <td>Express server port.</td>
+                </tr>
+                <tr>
+                  <td>ONE_AUTH_DATABASE_SERVER_URL</td>
+                  <td>mongodb://localhost:27017/oneauth</td>
+                  <td>URL</td>
+                  <td>
+                    MongoDB connection string for user accounts and profile
+                    data.
+                  </td>
+                </tr>
+                <tr>
+                  <td>ONE_AUTH_RATE_LIMIT_WINDOW_SIZE</td>
+                  <td>60000</td>
+                  <td>Milliseconds</td>
+                  <td>
+                    Shared rate-limit window used by
+                    <code>limitRate(max)</code>.
+                  </td>
+                </tr>
+                <tr>
+                  <td>ONE_MAIL_SERVER_URL</td>
+                  <td>http://localhost:7000</td>
+                  <td>URL</td>
+                  <td>OneMail service endpoint used for OTP email dispatch.</td>
+                </tr>
+                <tr>
+                  <td>ONE_MAIL_SERVER_SECRET</td>
+                  <td>replace-with-secret</td>
+                  <td>Secret</td>
+                  <td>HMAC shared secret used to sign OTP email requests.</td>
+                </tr>
+                <tr>
+                  <td>ONE_AUTH_CACHE_SERVER_URL</td>
+                  <td>redis://localhost:6379</td>
+                  <td>URL</td>
+                  <td>
+                    Redis connection string for sessions, OTPs, verified tokens,
+                    and auth codes.
+                  </td>
+                </tr>
+                <tr>
+                  <td>ONE_AUTH_OTP_TTL</td>
+                  <td>300</td>
+                  <td>Seconds</td>
+                  <td>
+                    Registration or reset OTP lifetime. 300 seconds equals 5
+                    minutes.
+                  </td>
+                </tr>
+                <tr>
+                  <td>ONE_AUTH_VERIFIED_TOKEN_TTL</td>
+                  <td>300</td>
+                  <td>Seconds</td>
+                  <td>
+                    Lifetime for the temporary verified-email token cookie.
+                  </td>
+                </tr>
+                <tr>
+                  <td>ONE_AUTH_CLIENT_DOMAIN_URL</td>
+                  <td>http://localhost:5173</td>
+                  <td>URL</td>
+                  <td>Allowed browser origin for CORS credentials.</td>
+                </tr>
+                <tr>
+                  <td>ONE_AUTH_SESSION_COOKIE_TTL</td>
+                  <td>604800</td>
+                  <td>Seconds / 7 days</td>
+                  <td>
+                    Lifetime for the Redis-backed
+                    <code>session_token</code> cookie.
+                  </td>
+                </tr>
+                <tr>
+                  <td>ONE_AUTH_IMAGE_KIT_PUBLIC_KEY</td>
+                  <td>public_xxxxx</td>
+                  <td>Key</td>
+                  <td>ImageKit public key for CDN-backed avatar workflows.</td>
+                </tr>
+                <tr>
+                  <td>ONE_AUTH_IMAGE_KIT_PRIVATE_KEY</td>
+                  <td>private_xxxxx</td>
+                  <td>Secret</td>
+                  <td>
+                    ImageKit private key used by the backend for secure image
+                    operations.
+                  </td>
+                </tr>
+                <tr>
+                  <td>ONE_AUTH_IMAGE_KIT_PUBLIC_URL</td>
+                  <td>https://ik.imagekit.io/...</td>
+                  <td>URL</td>
+                  <td>
+                    Public CDN base URL used to serve uploaded profile avatars.
+                  </td>
+                </tr>
+                <tr>
+                  <td>ONE_AUTH_JWT_SECRET</td>
+                  <td>replace-with-long-random-secret</td>
+                  <td>Secret</td>
+                  <td>
+                    Signing secret for SSO JWT access tokens. Use a strong
+                    production-only value.
+                  </td>
+                </tr>
+                <tr>
+                  <td>ONE_AUTH_ACCESS_TOKEN_TTL</td>
+                  <td>86400</td>
+                  <td>Seconds / 24 hours</td>
+                  <td>
+                    JWT access-token lifetime returned by
+                    <code>/sso/token</code>.
+                  </td>
+                </tr>
+                <tr>
+                  <td>ONE_AUTH_TOKEN_TTL</td>
+                  <td>60</td>
+                  <td>Seconds</td>
+                  <td>Authorization-code lifetime for SSO token exchange.</td>
+                </tr>
+                <tr>
+                  <td>ONE_AUTH_ALLOWED_CLIENT_ID</td>
+                  <td>oneapp,admin</td>
+                  <td>CSV</td>
+                  <td>
+                    Comma-separated list of client IDs allowed to request SSO.
+                  </td>
+                </tr>
+                <tr>
+                  <td>ONE_AUTH_ALLOWED_REDIRECT_URL</td>
+                  <td>http://localhost:3000/callback</td>
+                  <td>CSV URLs</td>
+                  <td>
+                    Comma-separated redirect allowlist. Redirect URIs must match
+                    exactly.
+                  </td>
+                </tr>
+                <tr>
+                  <td>ONE_AUTH_CLIENT_ID_SECRET</td>
+                  <td>oneapp:secret-one,admin:secret-two</td>
+                  <td>CSV pairs</td>
+                  <td>
+                    Client credential map in
+                    <code>client_id:client_secret</code> format.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <hr />
+
+        <!-- API SURFACE -->
+        <div class="section" id="api">
+          <h2>API Surface</h2>
+          <p style="margin-top: 14px"></p>
+
+          <h3>Registration</h3>
+          <div class="api-row">
+            <span class="method method-post">POST</span
+            ><span class="api-path">/auth/register/verify-email</span
+            ><span class="api-desc"
+              >Send OTP to a new user's email address.</span
+            >
+          </div>
+          <div class="api-row">
+            <span class="method method-post">POST</span
+            ><span class="api-path">/auth/register/verify-otp</span
+            ><span class="api-desc"
+              >Verify OTP and set a temporary verified token.</span
+            >
+          </div>
+          <div class="api-row">
+            <span class="method method-post">POST</span
+            ><span class="api-path">/auth/register/create-account</span
+            ><span class="api-desc"
+              >Create account, clear verified token, and start a session.</span
+            >
+          </div>
+
+          <h3>Session</h3>
+          <div class="api-row">
+            <span class="method method-post">POST</span
+            ><span class="api-path">/auth/session/login</span
+            ><span class="api-desc"
+              >Validate credentials and issue <code>session_token</code>.</span
+            >
+          </div>
+          <div class="api-row">
+            <span class="method method-post">POST</span
+            ><span class="api-path">/auth/session/logout</span
+            ><span class="api-desc">End the active session.</span>
+          </div>
+          <div class="api-row">
+            <span class="method method-get">GET</span
+            ><span class="api-path">/auth/session/validate</span
+            ><span class="api-desc"
+              >Confirm whether the current browser session is valid.</span
+            >
+          </div>
+
+          <h3>User</h3>
+          <div class="api-row">
+            <span class="method method-get">GET</span
+            ><span class="api-path">/users/me</span
+            ><span class="api-desc">Fetch current user's profile data.</span>
+          </div>
+          <div class="api-row">
+            <span class="method method-patch">PATCH</span
+            ><span class="api-path">/users/me</span
+            ><span class="api-desc">Update current user's profile data.</span>
+          </div>
+
+          <h3>Avatar</h3>
+          <div class="api-row">
+            <span class="method method-post">POST</span
+            ><span class="api-path">/avatar/upload</span
+            ><span class="api-desc">Upload or replace profile avatar.</span>
+          </div>
+          <div class="api-row">
+            <span class="method method-delete">DELETE</span
+            ><span class="api-path">/avatar/remove</span
+            ><span class="api-desc">Remove profile avatar.</span>
+          </div>
+
+          <h3>Password</h3>
+          <div class="api-row">
+            <span class="method method-post">POST</span
+            ><span class="api-path">/password/verify</span
+            ><span class="api-desc"
+              >Verify current password before sensitive changes.</span
+            >
+          </div>
+          <div class="api-row">
+            <span class="method method-post">POST</span
+            ><span class="api-path">/password/change</span
+            ><span class="api-desc"
+              >Change the authenticated user's password.</span
+            >
+          </div>
+
+          <h3>SSO</h3>
+          <div class="api-row">
+            <span class="method method-get">GET</span
+            ><span class="api-path">/sso/authorize</span
+            ><span class="api-desc"
+              >Validate browser session and create authorization code.</span
+            >
+          </div>
+          <div class="api-row">
+            <span class="method method-post">POST</span
+            ><span class="api-path">/sso/token</span
+            ><span class="api-desc"
+              >Exchange authorization code and client secret for JWT.</span
+            >
+          </div>
+          <div class="api-row">
+            <span class="method method-get">GET</span
+            ><span class="api-path">/sso/userinfo</span
+            ><span class="api-desc"
+              >Return user profile details for a valid Bearer access
+              token.</span
+            >
+          </div>
+
+          <h3>Reset Password</h3>
+          <div class="api-row">
+            <span class="method method-post">Mounted</span
+            ><span class="api-path">/auth/password/*</span
+            ><span class="api-desc">Password reset flow routes.</span>
+          </div>
+        </div>
+
+        <hr />
+
+        <!-- SETUP -->
+        <div class="section" id="setup">
+          <h2>Setup</h2>
+
+          <h3>Prerequisites</h3>
+          <ul style="margin-top: 10px">
+            <li>Node.js 20 or newer.</li>
+            <li>MongoDB running locally or through a hosted provider.</li>
+            <li>Redis running locally or through a hosted provider.</li>
+            <li>
+              OneMail service reachable through
+              <code>ONE_MAIL_SERVER_URL</code>.
+            </li>
+            <li>ImageKit account credentials for avatar storage.</li>
+          </ul>
+
+          <h3>Install dependencies</h3>
+          <pre><code>npm install</code></pre>
+
+          <h3>Configure environment</h3>
+          <p>
+            Create a <code>.env</code> file in the API project root and fill all
+            variables listed in the Master Environment &amp; Metrics table.
+          </p>
+
+          <h3>Start the server</h3>
+          <p>
+            The current <code>package.json</code> does not define a startup
+            script. Use one of the following approaches.
+          </p>
+          <p>Run the TypeScript entry point with a TS runtime:</p>
+          <pre><code>npx tsx server.ts</code></pre>
+
+          <p>Or add scripts similar to:</p>
+          <pre><code>{
+  "scripts": {
+    "dev": "tsx watch server.ts",
+    "start": "tsx server.ts"
+  }
+}</code></pre>
+
+          <p>Then start development mode:</p>
+          <pre><code>npm run dev</code></pre>
+
+          <p>The server logs a successful startup as:</p>
+          <pre><code>One Auth Server is running on http://localhost:8000</code></pre>
+        </div>
+
+        <hr />
+
+        <!-- OPERATIONAL NOTES -->
+        <div class="section" id="notes">
+          <h2>Operational Notes</h2>
+          <ul style="margin-top: 14px">
+            <li>
+              CORS is restricted to <code>ONE_AUTH_CLIENT_DOMAIN_URL</code> and
+              enables credentials.
+            </li>
+            <li>Session cookies are HTTP-only and backed by Redis.</li>
+            <li>
+              OTPs, verified tokens, and SSO authorization codes are short-lived
+              Redis records.
+            </li>
+            <li>SSO redirect URIs are exact-match allowlisted.</li>
+            <li>
+              Client secrets are loaded into a <code>Map</code> from
+              <code>ONE_AUTH_CLIENT_ID_SECRET</code>.
+            </li>
+            <li>
+              The service intentionally fails startup when required environment
+              variables are missing.
+            </li>
+          </ul>
+        </div>
+
+        <hr />
+
+        <!-- HARDENING -->
+        <div class="section" id="hardening">
+          <h2>Recommended Production Hardening</h2>
+          <ul style="margin-top: 14px">
+            <li>
+              Use HTTPS so <code>secure</code> cookies behave correctly in
+              production.
+            </li>
+            <li>
+              Store secrets in a managed secret vault, not in committed files.
+            </li>
+            <li>
+              Rotate <code>ONE_AUTH_JWT_SECRET</code>, client secrets, and mail
+              HMAC secrets on a defined schedule.
+            </li>
+            <li>
+              Use separate Redis databases or key prefixes for staging and
+              production.
+            </li>
+            <li>Keep redirect allowlists narrow and exact.</li>
+            <li>
+              Add centralized log aggregation around
+              <code>requestLogger</code> output.
+            </li>
+            <li>Pin production CORS to the deployed OneAuth Client origin.</li>
+          </ul>
+        </div>
+      </div>
+      <!-- /content -->
+    </div>
+    <!-- /main -->
+
+    <footer>
+      <p>
+        <strong>OneAuth API</strong> — Authentication authority and SSO token
+        issuer for the OneAuth ecosystem.
+      </p>
+    </footer>
+  </body>
+</html>

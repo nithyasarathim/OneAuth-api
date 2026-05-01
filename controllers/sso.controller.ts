@@ -160,7 +160,7 @@ const fetchUserInfo = async (
       throw new ApiError("Invalid token type", 401);
     }
 
-    const user = await UserAccount.findById(decoded.sub).select("_id email username department role skills description isAvailable");
+    const user = await UserAccount.findById(decoded.sub).select("_id email username description linkedinUrl githubUrl profileUrl");
     if (!user) {
       throw new ApiError("User not exists", 404);
     }

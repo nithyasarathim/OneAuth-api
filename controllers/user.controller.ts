@@ -35,12 +35,9 @@ const updatePersonalData = async (
     }
     const allowedFields = [
       "username",
-      "department",
-      "skills",
       "linkedinUrl",
       "githubUrl",
       "description",
-      "isAvailable",
     ];
     const normalizedData: Record<string, any> = {};
     for (const field of allowedFields) {
@@ -62,9 +59,7 @@ const updatePersonalData = async (
         new: true,
         runValidators: true,
       }
-    ).select(
-      "username department skills linkedinUrl githubUrl description isAvailable profilePicture resumeUrl"
-    );
+    ).select("username linkedinUrl githubUrl description profilePicture");
     if (!updatedUser) {
       throw new ApiError("No user found", 404);
     }
