@@ -293,6 +293,25 @@
         justify-content: center;
       }
 
+      .hero-metrics {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 18px;
+        width: 100%;
+      }
+
+      .hero-metrics a {
+        display: inline-block;
+      }
+
+      .hero-metrics img {
+        height: 24px;
+        width: auto;
+        display: block;
+      }
+
       .tech-badge {
         background: #f0f9ff;
         border: 1px solid #bae6fd;
@@ -750,8 +769,12 @@
           <div class="sidebar-brand-sub">Documentation</div>
         </div>
       </div>
-
       <div class="sidebar-section">
+        <img
+          src="
+https://sonarcloud.io/images/project_badges/sonarcloud-light.svg
+" style="width: 150px; margin-left:7px"
+        />
         <div class="sidebar-section-title">Overview</div>
         <a class="sidebar-link" href="#overview">Service Overview</a>
         <a class="sidebar-link" href="#sso">SSO Handshake</a>
@@ -772,7 +795,6 @@
         <a class="sidebar-link" href="#notes">Operational Notes</a>
         <a class="sidebar-link" href="#hardening">Production Hardening</a>
       </div>
-
       <div class="sidebar-coffee">
         <a href="https://buymeacoffee.com/nithyasarathim" target="_blank">
           <img
@@ -781,12 +803,14 @@
           />
         </a>
       </div>
-
+      <div class="sidebar-credit">
+      </div>
       <div class="sidebar-credit">
         Developed by
         <a href="https://github.com/nithyasarathim" target="_blank"
           >Nithyasarathim</a
         >
+        
       </div>
     </nav>
 
@@ -802,6 +826,38 @@
             <span class="tech-badge">Redis Sessions</span>
             <span class="tech-badge">JWT · SSO</span>
             <span class="tech-badge">ImageKit CDN</span>
+          </div>
+          <div class="hero-metrics">
+            <a href="https://sonarcloud.io/summary/new_code?id=nithyasarathim_OneAuth-api" target="_blank" rel="noreferrer">
+              <img src="https://sonarcloud.io/api/project_badges/measure?project=nithyasarathim_OneAuth-api&metric=alert_status" alt="Quality Gate Status" />
+            </a>
+            <a href="https://sonarcloud.io/summary/new_code?id=nithyasarathim_OneAuth-api" target="_blank" rel="noreferrer">
+              <img src="https://sonarcloud.io/api/project_badges/measure?project=nithyasarathim_OneAuth-api&metric=bugs" alt="Bugs" />
+            </a>
+            <a href="https://sonarcloud.io/summary/new_code?id=nithyasarathim_OneAuth-api" target="_blank" rel="noreferrer">
+              <img src="https://sonarcloud.io/api/project_badges/measure?project=nithyasarathim_OneAuth-api&metric=code_smells" alt="Code Smells" />
+            </a>
+            <a href="https://sonarcloud.io/summary/new_code?id=nithyasarathim_OneAuth-api" target="_blank" rel="noreferrer">
+              <img src="https://sonarcloud.io/api/project_badges/measure?project=nithyasarathim_OneAuth-api&metric=duplicated_lines_density" alt="Duplicated Lines (%)" />
+            </a>
+            <a href="https://sonarcloud.io/summary/new_code?id=nithyasarathim_OneAuth-api" target="_blank" rel="noreferrer">
+              <img src="https://sonarcloud.io/api/project_badges/measure?project=nithyasarathim_OneAuth-api&metric=ncloc" alt="Lines of Code" />
+            </a>
+            <a href="https://sonarcloud.io/summary/new_code?id=nithyasarathim_OneAuth-api" target="_blank" rel="noreferrer">
+              <img src="https://sonarcloud.io/api/project_badges/measure?project=nithyasarathim_OneAuth-api&metric=reliability_rating" alt="Reliability Rating" />
+            </a>
+            <a href="https://sonarcloud.io/summary/new_code?id=nithyasarathim_OneAuth-api" target="_blank" rel="noreferrer">
+              <img src="https://sonarcloud.io/api/project_badges/measure?project=nithyasarathim_OneAuth-api&metric=security_rating" alt="Security Rating" />
+            </a>
+            <a href="https://sonarcloud.io/summary/new_code?id=nithyasarathim_OneAuth-api" target="_blank" rel="noreferrer">
+              <img src="https://sonarcloud.io/api/project_badges/measure?project=nithyasarathim_OneAuth-api&metric=sqale_index" alt="Technical Debt" />
+            </a>
+            <a href="https://sonarcloud.io/summary/new_code?id=nithyasarathim_OneAuth-api" target="_blank" rel="noreferrer">
+              <img src="https://sonarcloud.io/api/project_badges/measure?project=nithyasarathim_OneAuth-api&metric=sqale_rating" alt="Maintainability Rating" />
+            </a>
+            <a href="https://sonarcloud.io/summary/new_code?id=nithyasarathim_OneAuth-api" target="_blank" rel="noreferrer">
+              <img src="https://sonarcloud.io/api/project_badges/measure?project=nithyasarathim_OneAuth-api&metric=vulnerabilities" alt="Vulnerabilities" />
+            </a>
           </div>
         </div>
       </div>
