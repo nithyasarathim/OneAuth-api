@@ -32,7 +32,7 @@ const sendOtp = async (req: Request, res: Response, next: NextFunction) => {
     const timestamp = Date.now().toString();
     const signature = crypto
       .createHmac("sha256", config.emailServerSecret)
-      .update(email + otp + timestamp)
+      .update(`${email}:${otp}:${timestamp}`)
       .digest("hex");
 
     await sendForgetPasswordEmail(email, otp, timestamp, signature);

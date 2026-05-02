@@ -21,7 +21,7 @@ const generateToken = () => crypto.randomBytes(32).toString("hex");
 const verifyEmail = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): Promise<void> => {
   try {
     const email = normalizeEmail(req.body.email);
@@ -35,7 +35,7 @@ const verifyEmail = async (
     const timestamp = Date.now().toString();
     const signature = crypto
       .createHmac("sha256", config.emailServerSecret)
-      .update(email + otp + timestamp)
+      .update(`${email}:${otp}:${timestamp}`)
       .digest("hex");
 
     await redis.set(`otp:${email}`, otp, { EX: OTP_TTL });
@@ -53,7 +53,7 @@ const verifyEmail = async (
 const verifyOTP = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): Promise<void> => {
   try {
     const email = normalizeEmail(req.body.email);
@@ -98,7 +98,7 @@ const verifyOTP = async (
 const createAccount = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): Promise<void> => {
   try {
     const email = normalizeEmail(req.body.email);
